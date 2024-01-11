@@ -1,0 +1,247 @@
+ [
+  {
+    "label": "THB - ไทย",
+    "code": "TH",
+    "unit": "THB"
+  },
+  {
+    "label": "USD - สหรัฐอเมริกา",
+    "code": "US",
+    "unit": "USD"
+  },
+  {
+    "label": "GBP - สหราชอาณาจักร",
+    "code": "GB",
+    "unit": "GBP"
+  },
+  {
+    "label": "EUR - ยูโรโซน",
+    "code": "EU",
+    "unit": "EUR"
+  },
+  {
+    "label": "JPY - ญี่ปุ่น",
+    "code": "JP",
+    "unit": "JPY"
+  },
+  {
+    "label": "KRW - เกาหลีใต้",
+    "code": "KR",
+    "unit": "KRW"
+  },
+  {
+    "label": "HKD - ฮ่องกง",
+    "code": "HK",
+    "unit": "HKD"
+  },
+  {
+    "label": "MYR - มาเลเซีย",
+    "code": "MY",
+    "unit": "MYR"
+  },
+  {
+    "label": "SGD - สิงคโปร์",
+    "code": "SG",
+    "unit": "SGD"
+  },
+  {
+    "label": "BND - บรูไนดารุสซาลาม",
+    "code": "BN",
+    "unit": "BND"
+  },
+  {
+    "label": "PHP - ฟิลิปปินส์",
+    "code": "PH",
+    "unit": "PHP"
+  },
+  {
+    "label": "IDR - อินโดนิเซีย",
+    "code": "ID",
+    "unit": "IDR"
+  },
+  {
+    "label": "INR - อินเดีย",
+    "code": "IN",
+    "unit": "INR"
+  },
+  {
+    "label": "CHF - สวิตเซอร์แลนด์",
+    "code": "CH",
+    "unit": "CHF"
+  },
+  {
+    "label": "AUD - ออสเตรเลีย",
+    "code": "AU",
+    "unit": "AUD"
+  },
+  {
+    "label": "NZD - นิวซีแลนด์",
+    "code": "NZ",
+    "unit": "NZD"
+  },
+  {
+    "label": "CAD - แคนาดา",
+    "code": "CA",
+    "unit": "CAD"
+  },
+  {
+    "label": "SEK - สวีเดน",
+    "code": "SE",
+    "unit": "SEK"
+  },
+  {
+    "label": "DKK - เดนมาร์ก",
+    "code": "DK",
+    "unit": "DKK"
+  },
+  {
+    "label": "NOK - นอร์เวย์",
+    "code": "NO",
+    "unit": "NOK"
+  },
+  {
+    "label": "CNY - จีน",
+    "code": "CN",
+    "unit": "CNY"
+  },
+  {
+    "label": "MXN - เม็กซิโก",
+    "code": "MX",
+    "unit": "MXN"
+  },
+  {
+    "label": "ZAR - แอฟริกาใต้",
+    "code": "ZA",
+    "unit": "ZAR"
+  },
+  {
+    "label": "TWD - ไต้หวัน",
+    "code": "TW",
+    "unit": "TWD"
+  },
+  {
+    "label": "KWD - คูเวต",
+    "code": "KW",
+    "unit": "KWD"
+  },
+  {
+    "label": "SAR - ซาอุดีอาระเบีย",
+    "code": "SA",
+    "unit": "SAR"
+  },
+  {
+    "label": "AED - สหรัฐอาหรับเอมิเรตส์",
+    "code": "AE",
+    "unit": "AED"
+  },
+  {
+    "label": "MMK - พม่า",
+    "code": "MM",
+    "unit": "MMK"
+  },
+  {
+    "label": "BDT - บังกลาเทศ",
+    "code": "BD",
+    "unit": "BDT"
+  },
+  {
+    "label": "CZK - สาธารณรัฐเช็ก",
+    "code": "CZ",
+    "unit": "CZK"
+  },
+  {
+    "label": "KHR - กัมพูชา",
+    "code": "KH",
+    "unit": "KHR"
+  },
+  {
+    "label": "KES - เคนยา",
+    "code": "KE",
+    "unit": "KES"
+  },
+  {
+    "label": "LAK - ลาว",
+    "code": "LA",
+    "unit": "LAK"
+  },
+  {
+    "label": "RUB - รัสเซีย",
+    "code": "RU",
+    "unit": "RUB"
+  },
+  {
+    "label": "VND - เวียดนาม",
+    "code": "VN",
+    "unit": "VND"
+  },
+  {
+    "label": "EGP - อียิปต์",
+    "code": "EG",
+    "unit": "EGP"
+  },
+  {
+    "label": "PLN - โปแลนด์",
+    "code": "PL",
+    "unit": "PLN"
+  },
+  {
+    "label": "LKR - ศรีลังกา",
+    "code": "LK",
+    "unit": "LKR"
+  },
+  {
+    "label": "IQD - อิรัก",
+    "code": "IQ",
+    "unit": "IQD"
+  },
+  {
+    "label": "BHD - บาห์เรน",
+    "code": "BH",
+    "unit": "BHD"
+  },
+  {
+    "label": "OMR - โอมาน",
+    "code": "OM",
+    "unit": "OMR"
+  },
+  {
+    "label": "JOD - จอร์แดน",
+    "code": "JO",
+    "unit": "JOD"
+  },
+  {
+    "label": "QAR - กาตาร์",
+    "code": "QA",
+    "unit": "QAR"
+  },
+  {
+    "label": "MVR - มัลดีฟส์",
+    "code": "MV",
+    "unit": "MVR"
+  },
+  {
+    "label": "NPR - เนปาล",
+    "code": "NP",
+    "unit": "NPR"
+  },
+  {
+    "label": "PGK - ปาปัวนิวกินี ",
+    "code": "PG",
+    "unit": "PGK"
+  },
+  {
+    "label": "ILS - อิสราเอล",
+    "code": "IL",
+    "unit": "ILS"
+  },
+  {
+    "label": "HUF - ฮังการี",
+    "code": "HU",
+    "unit": "HUF"
+  },
+  {
+    "label": "PKR - ปากีสถาน",
+    "code": "PK",
+    "unit": "PKR"
+  }
+]

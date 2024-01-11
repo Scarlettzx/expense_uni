@@ -1,0 +1,18 @@
+[
+ {
+    "Type": "แยกภาษี",
+    "isVatIncluded": false,
+    "vat":7
+    
+   },
+   {
+   "Type": "รวมภาษี",
+   "isVatIncluded": true,
+   "vat":7
+   },
+   {
+   "Type": "ไม่มีภาษี",
+   "isVatIncluded":false, 
+   "vat":0
+ }
+] 
