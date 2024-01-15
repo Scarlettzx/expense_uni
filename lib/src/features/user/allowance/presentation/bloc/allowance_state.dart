@@ -18,13 +18,19 @@ final class AllowanceLoading extends AllowanceState {
 final class AllowanceFinish extends AllowanceState {
   final List<EmployeesAllRolesEntity>? empsallrole;
   final ResponseAllowanceEntity? responseaddallowance;
+  final GetExpenseAllowanceByIdEntity? expenseallowancebyid;
   const AllowanceFinish({
     this.empsallrole,
     this.responseaddallowance,
+    this.expenseallowancebyid,
   });
 
   @override
-  List<Object?> get props => [empsallrole];
+  List<Object?> get props => [
+        empsallrole,
+        responseaddallowance,
+        expenseallowancebyid,
+      ];
 }
 
 final class AllowanceFailure extends AllowanceState {

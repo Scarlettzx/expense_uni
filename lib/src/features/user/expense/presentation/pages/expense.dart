@@ -547,6 +547,7 @@ class _ExpenseState extends State<Expense> {
                           searchEnabled: true,
                           borderRadius: 30,
                           selectionType: SelectionType.multi,
+
                           chipConfig: const ChipConfig(
                               wrapType: WrapType.scroll, autoScroll: true),
                           dropdownHeight: 300,

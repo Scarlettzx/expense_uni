@@ -9,6 +9,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
 import 'package:iconamoon/iconamoon.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 // import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -21,11 +23,14 @@ import 'package:uni_expense/src/features/user/allowance/presentation/widgets/cus
 
 // import '../../../../../components/concurrency.dart';
 import '../../../../../../injection_container.dart';
+import '../../../../../components/approverfield.dart';
 import '../../../../../components/customselectedtabbar.dart';
+import '../../../../../components/emailmultiselect_dropdown .dart';
 import '../../../../../components/filepicker.dart';
 import '../../../../../components/motion_toast.dart';
 import '../../../../../core/features/user/presentation/provider/profile_provider.dart';
 import '../../data/models/addexpenseallowance_model.dart';
+import '../widgets/required_text.dart';
 // import '../../../../../components/models/concurrency_model,.dart';
 
 class AllowanceGeneralInformation extends StatefulWidget {
@@ -47,6 +52,7 @@ class _AllowanceGeneralInformationState
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   String _enteredText = '';
   List<String> selectedValues = [];
+  bool checkonclickdraft = false;
   // int totalDays = 0;
   // List<ExpenseData> dataInitial = [];
   List<Map<String, dynamic>> listExpense = [];
@@ -165,36 +171,62 @@ class _AllowanceGeneralInformationState
                   } else if (state is AllowanceLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is AllowanceFinish) {
+                    if (state.responseaddallowance != null &&
+                        state.responseaddallowance!.idExpense != null) {
+                      // Dispatch GetExpenseAllowanceByIdData event with idExpense
+                      allowanceBloc.add(GetExpenseAllowanceByIdData(
+                        idExpense: state.responseaddallowance!.idExpense!,
+                      ));
+                      print(state.expenseallowancebyid);
+                    }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'ข้อมูลทั่วไป',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'ข้อมูลทั่วไป',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            if (checkonclickdraft == true) ...[
+                              Container(
+                                constraints: BoxConstraints(maxWidth: 200.0),
+                                child: Expanded(
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {},
+                                    style: OutlinedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              10.0), // Adjust the padding here
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                      ),
+                                      side: BorderSide(
+                                        width: 3.0,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'ลบแบบร่าง',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]
+                          ],
                         ),
                         const Gap(20),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'ชื่อรายการ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  fontFamily:
-                                      'kanit', // Explicitly set the fontFamily
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
+                        RequiredText(
+                          labelText: 'ชื่อรายการ',
+                          asteriskText: '*',
                         ),
                         const Gap(10),
                         TextFormField(
@@ -303,78 +335,49 @@ class _AllowanceGeneralInformationState
                               color: Colors.grey.shade600),
                         ),
                         const Gap(10),
-                        MultiSelectDropDown(
-                          onOptionSelected: (options) {
-                            setState(() {
-                              selectedValues = options
-                                  .map((item) {
-                                    if (item.value != null) {
-                                      final email = item.label.split('\n')[1];
-
-                                      return email.trim();
-                                    }
-                                    return null;
-                                  })
-                                  .whereType<String>() // Filter out null values
-                                  .toList();
-                              formData['cc_email'] = selectedValues;
-                              print(formData);
-                              print("FORMDATA EMAIL${formData['cc_email']}");
-                            });
-                            FocusScope.of(context).unfocus();
-                            debugPrint(selectedValues.toString());
+                        EmailMultiSelectDropDown(
+                          onOptionSelected: (selectedValues) {
+                            formData['cc_email'] = selectedValues;
+                            print(formData);
+                            print("FORMDATA EMAIL${formData['cc_email']}");
                           },
-                          showClearIcon: true,
                           options: state.empsallrole!
                               .map((employee) => ValueItem(
-                                  label:
-                                      '${employee.firstnameTh!}  ${employee.lastnameTh} \n${employee.email}',
-                                  value: employee.firstnameTh! +
-                                      employee.lastnameTh!))
+                                    label:
+                                        '${employee.firstnameTh!}  ${employee.lastnameTh} \n${employee.email}',
+                                    value: employee.firstnameTh! +
+                                        employee.lastnameTh!,
+                                  ))
                               .toList(),
-                          maxItems: 3,
-                          searchEnabled: true,
-                          borderRadius: 30,
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(
-                              wrapType: WrapType.scroll, autoScroll: true),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
                         ),
                         const Gap(20),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'ผู้อนุมัติ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  fontFamily:
-                                      'kanit', // Explicitly set the fontFamily
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
+                        RequiredText(
+                          labelText: 'ผู้อนุมัติ',
+                          asteriskText: '*',
                         ),
                         const Gap(10),
-                        SearchField(
-                          // onSearchTextChanged: ,
-                          // Validation logic
-                          validator: (x) {
-                            print("Value of x: $x");
-
-                            if (approverController.text.isNotEmpty) {
-                              String enteredText =
-                                  approverController.text.trim();
+                        CustomSearchField(
+                          controller: approverController,
+                          onSuggestionTap: (selectedItem) {
+                            if (selectedItem is SearchFieldListItem<String>) {
+                              approverController.text = selectedItem.item!;
+                              FocusScope.of(context).unfocus();
+                            }
+                            print(approverController.text);
+                          },
+                          suggestions: state.empsallrole!
+                              .map((e) => SearchFieldListItem(
+                                    "${e.firstnameTh} ${e.lastnameTh}",
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          "${e.firstnameTh} ${e.lastnameTh}"),
+                                    ),
+                                  ))
+                              .toList(),
+                          validator: (String? value) {
+                            if (value != null && value.isNotEmpty) {
+                              String enteredText = value.trim();
                               print("enteredText: '$enteredText'");
 
                               List<String> suggestionTexts = state.empsallrole!
@@ -384,13 +387,10 @@ class _AllowanceGeneralInformationState
                               print("Suggestion Texts: $suggestionTexts");
 
                               List<Object> suggestionIds = state.empsallrole!
-                                  .map((e) =>
-                                      e.idManagerLV1 ??
-                                      "") // Replace "" with a default value if idManagerLV1 can be null
+                                  .map((e) => e.idManagerLV1 ?? "")
                                   .toList();
                               print("Suggestion Ids: $suggestionIds");
 
-                              // Check if the trimmed entered text exactly matches any suggestion
                               if (suggestionTexts
                                   .map((e) => e.replaceAll(RegExp(r'\s+'), ''))
                                   .contains(enteredText.replaceAll(
@@ -402,127 +402,17 @@ class _AllowanceGeneralInformationState
                                     .indexOf(enteredText.replaceAll(
                                         RegExp(r'\s+'), ''));
 
-                                if (x == enteredText) {
+                                if (value == enteredText) {
                                   setState(() {
                                     formData['approver'] = suggestionIds[index];
                                     print(formData['approver']);
                                   });
-                                  return null; // Validation passed
+                                  return null;
                                 }
                               }
                             }
                             return 'Please Enter a valid State';
                           },
-
-                          onSuggestionTap: (selectedItem) {
-                            if (selectedItem is SearchFieldListItem<String>) {
-                              approverController.text = selectedItem.item!;
-                              FocusScope.of(context).unfocus();
-                            }
-                            print(approverController.text);
-                          },
-
-                          textInputAction: TextInputAction.done,
-                          controller: approverController,
-                          suggestionState: Suggestion.expand,
-                          // focusNode: focus,
-                          // onSuggestionTap: (SearchFieldListItem<String> x) {
-                          //   focus.unfocus();
-                          // },
-                          scrollbarDecoration: ScrollbarDecoration(
-                              shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(2),
-                                      bottom: Radius.circular(2)),
-                                  side: BorderSide(
-                                      width: 1, color: Color(0xffff99ca))),
-                              thumbColor: Color(0xffff99ca)),
-                          itemHeight: 50,
-                          emptyWidget: Container(
-                            alignment: Alignment.center,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 2, color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.white,
-                                  blurRadius: 8.0, // soften the shadow
-                                  spreadRadius: 20.0, //extend the shadow
-                                  offset: Offset(
-                                    2.0,
-                                    5.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('ไม่พบข้อมูล'),
-                          ),
-                          suggestions: state.empsallrole!
-                              .map((e) => SearchFieldListItem(
-                                  "${e.firstnameTh}  ${e.lastnameTh}",
-                                  // "${e.idEmployees}",
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        "${e.firstnameTh}  ${e.lastnameTh}"),
-                                  )))
-                              .toList(),
-                          suggestionsDecoration: SuggestionDecoration(
-                            border: Border.all(
-                                width: 2, color: Colors.grey.shade300),
-                            padding:
-                                EdgeInsets.only(right: 8, top: 8, bottom: 8),
-                            // shape: BoxShape.circle,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white,
-                                blurRadius: 8.0, // soften the shadow
-                                spreadRadius: 20.0, //extend the shadow
-                                offset: Offset(
-                                  2.0,
-                                  5.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          searchInputDecoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 5),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 2.0,
-                                  color: Color.fromARGB(255, 252, 119, 119)),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2.0,
-                                color: Colors.grey.withOpacity(0.3),
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                            ),
-                            errorStyle: TextStyle(fontSize: 15),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2.0,
-                                color: Colors.grey.withOpacity(0.3),
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                  width: 2.0,
-                                  color: Colors.grey.withOpacity(0.3)),
-                            ),
-                          ),
                         ),
                         const Gap(30),
                         Divider(
@@ -534,28 +424,14 @@ class _AllowanceGeneralInformationState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'รายการ',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily:
-                                          'kanit', // Explicitly set the fontFamily
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '*',
-                                    style: TextStyle(
-                                      // fontSize: 20,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            RequiredText(
+                              labelText: 'รายการ',
+                              asteriskText: '*',
+                              textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'kanit',
+                                  color: Colors.black),
                             ),
 
                             // Text(
@@ -575,11 +451,11 @@ class _AllowanceGeneralInformationState
                                     child: const AllowanceAddList(),
                                   ),
                                 );
-// Update listExpense with new data from dataInitial
+                                // Update listExpense with new data from dataInitial
                                 ExpenseData.updateListExpense(
                                     dataInitial, listExpense);
 
-// Print the updated listExpense as JSON
+                                // Print the updated listExpense as JSON
                                 print(json.encode(listExpense));
                                 formData['listExpense'] = listExpense;
                                 print(
@@ -980,50 +856,6 @@ class _AllowanceGeneralInformationState
                           height: 1,
                         ),
                         const Gap(25),
-                        // const Text(
-                        //   'แนบไฟล์เอกสาร',
-                        //   style: TextStyle(
-                        //       fontSize: 16, fontWeight: FontWeight.bold),
-                        // ),
-                        // const Gap(25),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(
-                        //         20), // Use BorderRadius.circular for rounded corners
-                        //     color: Color.fromRGBO(255, 234, 239, 0.29),
-                        //   ),
-                        //   // width: MediaQuery.of(context).size.width * 0.9,
-                        //   // height: MediaQuery.of(context).size.height * 0.17,
-                        //   width: double.infinity,
-                        //   height: 208,
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.center,
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       Image.asset(
-                        //         "assets/images/img_expense_pick.png",
-                        //         fit: BoxFit.fill,
-                        //       ),
-                        //       const Text('อัพโหลดไฟล์ที่นี่'),
-                        //       const Gap(5),
-                        //       ClipOval(
-                        //         child: Material(
-                        //           color: Color(0xffff99ca), // Button color
-                        //           child: InkWell(
-                        //             splashColor:
-                        //                 Color(0xffff99ca), // Splash color
-                        //             onTap: () {},
-                        //             child: const SizedBox(
-                        //                 width: 56,
-                        //                 height: 56,
-                        //                 child: Icon(IconaMoon.share2,
-                        //                     color: Colors.white)),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                         FilePickerComponent(
                           onFileSelected: (file) {
                             setState(() {
@@ -1129,13 +961,16 @@ class _AllowanceGeneralInformationState
                                     .profileData.idEmployees!.runtimeType);
                                 AddExpenseAllowanceModel model =
                                     convertFormDataToModel(formData);
+
                                 // print(profileProvider.profileData.idpo!);
                                 allowanceBloc.add(AddExpenseAllowanceEvent(
                                   idCompany:
                                       profileProvider.profileData.idEmployees!,
                                   addallowancedata: model,
                                 ));
-                                setState(() {});
+                                setState(() {
+                                  checkonclickdraft = true;
+                                });
                                 // print(model.file.runtimeType);
                                 // ));
                               } else {

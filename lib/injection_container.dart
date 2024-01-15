@@ -51,12 +51,16 @@ Future<void> init() async {
   sl.registerFactory(() => AllowanceBloc(
         getEmployeeAllrolesdata: sl(),
         addexpenseallowancedata: sl(),
+        getexpenseAllowancebyId: sl(),
       ));
   // * Usecase
   sl.registerLazySingleton(() => usecases_allowance.GetEmployeesAllRoles(
         repository: sl(),
       ));
   sl.registerLazySingleton(() => AddAllowance(
+        repository: sl(),
+      ));
+  sl.registerLazySingleton(() => GetExpenseAllowanceById(
         repository: sl(),
       ));
   // * Repository

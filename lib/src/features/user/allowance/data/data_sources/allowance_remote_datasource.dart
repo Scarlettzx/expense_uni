@@ -10,11 +10,17 @@ import 'package:uni_expense/src/features/user/allowance/data/models/response_all
 import '../../../../../core/constant/network_api.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/storage/secure_storage.dart';
+import '../models/delete_expenseallowance_model.dart';
+import '../models/getallowancebyid_model.dart';
+import '../models/response_dodelete.dart';
 
 abstract class AllowanceRemoteDatasource {
   Future<List<EmployeesAllRolesModel>> getEmployeesAllRoles();
   Future<ResponseAllowanceModel> addExpenseAllowance(
       int idCompany, AddExpenseAllowanceModel formData);
+  Future<GetExpenseAllowanceByIdModel> getExpenseAllowanceById(int idExpense);
+  Future<ResponseDoDeleteAllowanceModel> deleteExpenseAllowance(
+      int idEmp, DeleteExpenseAllowanceModel data);
 }
 
 class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
@@ -105,7 +111,7 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
       print(response.statusCode);
       // Check the response status code
       if (response.statusCode == 200) {
-        // If successful, parse the response and return the result
+        print(response.body);
         return responseAllowanceModelFromJson(response.body);
       } else {
         // If the response status code is not 200, throw an exception
@@ -122,5 +128,39 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
   String convertEmailsToJson(List<dynamic> emails) {
     print(jsonEncode(emails.join(';')));
     return emails.isNotEmpty ? jsonEncode(emails.join(';')) : "";
+  }
+
+  @override
+  Future<GetExpenseAllowanceByIdModel> getExpenseAllowanceById(
+      int idExpense) async {
+    final response = await client.get(
+      Uri.parse(
+        "${NetworkAPI.baseURL}/api/expenseById/allowance/$idExpense",
+      ),
+      headers: {'x-access-token': '${await LoginStorage.readToken()}'},
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      return getExpenseAllowanceByIdModelFromJson(response.body);
+    } else {
+      throw ServerException(message: "Server error occurred");
+    }
+  }
+
+  @override
+  Future<ResponseDoDeleteAllowanceModel> deleteExpenseAllowance(
+      int idEmp, DeleteExpenseAllowanceModel data) async {
+    final response = await client.get(
+      Uri.parse(
+        "${NetworkAPI.baseURL}/api/expense/allowance/$idEmp/delete",
+      ),
+      headers: {'x-access-token': '${await LoginStorage.readToken()}'},
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      return responseDoDeleteAllowanceModelFromJson(response.body);
+    } else {
+      throw ServerException(message: "Server error occurred");
+    }
   }
 }
