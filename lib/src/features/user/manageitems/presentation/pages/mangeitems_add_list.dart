@@ -7,7 +7,7 @@ import '../../../allowance/presentation/pages/allowance_general_infor.dart';
 import '../../../allowance/presentation/widgets/customappbar.dart';
 import '../../../expense/presentation/pages/expense.dart';
 import '../../../fare/presentation/pages/fare_general_info.dart';
-import '../../../medicalBenefits/presentation/pages/general_infor.dart';
+import '../../../welfare/presentation/pages/general_infor.dart';
 
 class ManageItemsAddList extends StatelessWidget {
   const ManageItemsAddList({super.key});

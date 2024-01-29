@@ -9,8 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
 import 'package:iconamoon/iconamoon.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+// import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 // import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -29,8 +28,13 @@ import '../../../../../components/emailmultiselect_dropdown .dart';
 import '../../../../../components/filepicker.dart';
 import '../../../../../components/motion_toast.dart';
 import '../../../../../core/features/user/presentation/provider/profile_provider.dart';
+import '../../../manageitems/presentation/pages/manageitems.dart';
 import '../../data/models/addexpenseallowance_model.dart';
+import '../../data/models/edit_draft_allowance_model.dart';
+import '../../domain/entities/entities.dart';
+import '../widgets/delete_draft.dart';
 import '../widgets/required_text.dart';
+import 'allowance_edit.dart';
 // import '../../../../../components/models/concurrency_model,.dart';
 
 class AllowanceGeneralInformation extends StatefulWidget {
@@ -71,11 +75,54 @@ class _AllowanceGeneralInformationState
     // final ProfileProvider user =
     //     Provider.of<ProfileProvider>(context, listen: false);
     allowanceBloc.add(GetEmployeesAllRolesDataEvent());
+    // allowanceBloc.stream.listen((state) async {
+    //   if (state is AllowanceFinish) {
+    //     if (state.responseaddallowance != null &&
+    //         state.responseaddallowance!.idExpense != null) {
+    //       print('GetExpenseAllowanceByIdData');
+    //       // หรือใช้ Future.microtask
+    //       await Future.microtask(() async {
+    //         allowanceBloc.add(GetExpenseAllowanceByIdData(
+    //           idExpense: state.responseaddallowance!.idExpense!,
+    //         ));
+    //       }).then((_) async {
+    //         setState(() async {
+    //           listExpense = state.expenseallowancebyid!.listExpense!
+    //               .map((expenseEntity) => expenseEntity.toJson())
+    //               .toList();
+    //           updateFormdatatobloc(
+    //             state.expenseallowancebyid!,
+    //             updateformData,
+    //             listExpense,
+    //           );
+    //         });
+    //       });
+    //       // ตรวจสอบค่าหลังจาก setState เสร็จสมบูรณ์
+    //       // print('check ${state.expenseallowancebyid}');
+    //       // print("idExpense: ${state.expenseallowancebyid?.idExpense}");
+    //       // print(
+    //       //     "idExpenseAllowance: ${state.expenseallowancebyid?.idExpenseAllowance}");
+    //       // print("listExpense: ${state.expenseallowancebyid?.listExpense}");
+    //       print(checkonclickdraft);
+
+    //       // print(allItemsCount);
+    //     }
+    //   }
+    // });
   }
+
+  @override
+  void dispose() {
+    allowanceBloc.close();
+    super.dispose();
+  }
+  // Map<String, dynamic> getFormData() {
+  //   return checkonclickdraft ? updateformData : formData;
+  // }
 
   Map<String, dynamic> formData = {
     'nameExpense': '',
-    'isInternational': isInternational ? 1 : 0,
+    'isInternational': 0,
     'allowanceRate': 500,
     'allowanceRateGoverment': 270,
     'listExpense': [], // ตัวอย่างนี้ listExpense ถูกกำหนดเป็น List เปล่าก่อน
@@ -92,6 +139,26 @@ class _AllowanceGeneralInformationState
     'cc_email': [],
     'idPosition': 0,
   };
+  // Map<String, dynamic> updateformData = {
+  //   'nameExpense': '',
+  //   'isInternational': 0,
+  //   'allowanceRate': 500,
+  //   'allowanceRateGoverment': 270,
+  //   'listExpense': [],
+  //   'remark': '',
+  //   'typeExpense': 2,
+  //   'typeExpenseName': 'Allowance',
+  //   'lastUpdateDate': DateFormat('yyyy/MM/dd').format(DateTime.now()),
+  //   'status': 1,
+  //   'sumAllowance': 0.0,
+  //   'sumSurplus': 0.0,
+  //   'sumDays': 1.0,
+  //   'sumNet': 0.0,
+  //   'replyComment': [],
+  //   'approver': 0,
+  //   'deletedItem': [],
+  // };
+
   // Create a function to convert formData to AddExpenseAllowanceModel
   AddExpenseAllowanceModel convertFormDataToModel(
       Map<String, dynamic> formData) {
@@ -100,8 +167,8 @@ class _AllowanceGeneralInformationState
       isInternational: formData['isInternational'],
       listExpense: formData['listExpense'] == null
           ? []
-          : List<ListExpenseModel>.from(
-              formData['listExpense'].map((x) => ListExpenseModel.fromJson(x))),
+          : List<AddExpenseListExpenseModel>.from(formData['listExpense']
+              .map((x) => AddExpenseListExpenseModel.fromJson(x))),
       file: selectedFile,
       remark: formData['remark'],
       typeExpense: formData['typeExpense'],
@@ -129,7 +196,44 @@ class _AllowanceGeneralInformationState
     );
   }
 
-// Use the function to convert formData to AddExpenseAllowanceModel
+  // EditDraftAllowanceModel convertupdateDataToModel(
+  //   Map<String, dynamic> updateformData,
+  //   int idExpense,
+  //   int idExpenseAllowance,
+  //   String documentId,
+  // ) {
+  //   return EditDraftAllowanceModel(
+  //     nameExpense: updateformData['nameExpense'],
+  //     idExpense: idExpense,
+  //     idExpenseAllowance: idExpenseAllowance,
+  //     documentId: documentId,
+  //     isInternational: updateformData['isInternational'],
+  //     listExpense: updateformData['listExpense'] == null
+  //         ? []
+  //         : List<ListExpenseModel>.from(
+  //             updateformData['listExpense'].map(
+  //               (x) => ListExpenseModel.fromJson(x),
+  //             ),
+  //           ),
+  //     // ! File ต้องตั้งเงื่อนไขว่าถ้าuserไม่ได้ลบรูปภาพที่อัพโหลดมาตอนบันทึกแบบร่างครั้งแรก ให้ไม่ต้องส่งค่าไป
+  //     // !
+  //     file: selectedFile,
+  //     remark: updateformData['remark'],
+  //     typeExpense: updateformData['typeExpense'],
+  //     typeExpenseName: updateformData['typeExpenseName'],
+  //     lastUpdateDate: updateformData['lastUpdateDate'],
+  //     status: updateformData['status'],
+  //     sumAllowance: updateformData['sumAllowance'],
+  //     sumSurplus: updateformData['sumSurplus'],
+  //     sumDays: updateformData['sumDays'],
+  //     sumNet: updateformData['sumNet'],
+  //     comment: formData['replyComment'],
+  //     // ! config ตรง button delete in slidable
+  //     deletedItem: updateformData['deletedItem'],
+  //     idEmpApprover: updateformData['approver'],
+  //   );
+  // }
+
   void calculateSum(List<dynamic> array) {
     formData['sumDays'] = array.fold<double>(0, (sum, expense) {
       return sum + ((expense['countDays'] ?? 0) as double);
@@ -152,6 +256,7 @@ class _AllowanceGeneralInformationState
   Widget build(BuildContext context) {
     final ProfileProvider profileProvider =
         Provider.of<ProfileProvider>(context);
+    print(listExpense);
     return Scaffold(
       appBar: const CustomAppBar(
           image: 'appbar_aollowance.png', title: 'เบี้ยเลี้ยง'),
@@ -162,7 +267,39 @@ class _AllowanceGeneralInformationState
             create: (context) => allowanceBloc,
             child: Form(
               key: _keyForm,
-              child: BlocBuilder<AllowanceBloc, AllowanceState>(
+              child: BlocConsumer<AllowanceBloc, AllowanceState>(
+                listener: (context, state) {
+                  print(state);
+                  if (state is AllowanceFinish && formData['status'] == 1) {
+                    if (state.responseaddallowance != null &&
+                        state.responseaddallowance!.idExpense != null) {
+                      checkonclickdraft = true;
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          duration: Durations.medium1,
+                          type: PageTransitionType.rightToLeft,
+                          child: AllowanceEdit(
+                            profiledata: profileProvider.profileData,
+                            allowancebloc: allowanceBloc,
+                            idExepense: state.responseaddallowance!.idExpense!,
+                            checkonclickdraft: checkonclickdraft,
+                          ),
+                        ),
+                      );
+                    }
+                  } else if (state is AllowanceFinish &&
+                      formData['status'] == 2) {
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                        duration: Durations.medium1,
+                        type: PageTransitionType.rightToLeft,
+                        child: const ManageItems(),
+                      ),
+                    );
+                  }
+                },
                 builder: (context, state) {
                   if (state is AllowanceInitial) {
                     return Text(
@@ -171,56 +308,101 @@ class _AllowanceGeneralInformationState
                   } else if (state is AllowanceLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is AllowanceFinish) {
-                    if (state.responseaddallowance != null &&
-                        state.responseaddallowance!.idExpense != null) {
-                      // Dispatch GetExpenseAllowanceByIdData event with idExpense
-                      allowanceBloc.add(GetExpenseAllowanceByIdData(
-                        idExpense: state.responseaddallowance!.idExpense!,
-                      ));
-                      print(state.expenseallowancebyid);
-                    }
+                    // print("update formdata na$updateformData");
+
+                    // if (state.responseaddallowance != null &&
+                    //     state.responseaddallowance!.idExpense != null) {
+                    //   // // Dispatch GetExpenseAllowanceByIdData event with idExpense
+                    //   print('GetExpenseAllowanceByIdData');
+                    // allowanceBloc.add(GetExpenseAllowanceByIdData(
+                    //   idExpense: state.responseaddallowance!.idExpense!,
+                    // ));
+                    // print('check ${state.expenseallowancebyid}');
+                    // print(
+                    //     "idEmployees: ${profileProvider.profileData.idEmployees}");
+                    // print(
+                    //     "idExpense: ${state.expenseallowancebyid?.idExpense}");
+                    // print(
+                    //     "idExpenseAllowance: ${state.expenseallowancebyid?.idExpenseAllowance}");
+                    // print(
+                    //     "listExpense: ${state.expenseallowancebyid?.listExpense}");
+                    // print(checkonclickdraft);
+
+                    // updateFormdatatobloc(
+                    //     state.expenseallowancebyid!, updateformData);
+                    // nameExpenseController.text =
+                    //     state.expenseallowancebyid!.nameExpense!;
+                    //   (state.expenseallowancebyid!.isInternational!)
+                    //       ? _tabTextIndexSelected = 1
+                    //       : _tabTextIndexSelected = 0;
+                    //   approverController.text =
+                    //       state.expenseallowancebyid!.approverName!;
+                    //   listExpense = state.expenseallowancebyid!.listExpense!
+                    //       .map((expenseEntity) => expenseEntity.toJson())
+                    //       .toList();
+
+                    // }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'ข้อมูลทั่วไป',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            if (checkonclickdraft == true) ...[
-                              Container(
-                                constraints: BoxConstraints(maxWidth: 200.0),
-                                child: Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: () {},
-                                    style: OutlinedButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              10.0), // Adjust the padding here
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      ),
-                                      side: BorderSide(
-                                        width: 3.0,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                    label: Text(
-                                      'ลบแบบร่าง',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
+                            RequiredText(
+                                labelText: 'ข้อมูลทั่วไป',
+                                textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'kanit',
+                                  color: Colors.black,
                                 ),
-                              ),
-                            ]
+                                asteriskText: ""
+                                //     (checkonclickdraft) ? ' ( แบบร่าง )' : '',
+                                // asteriskStyle: TextStyle(
+                                //   fontSize: 16,
+                                //   fontWeight: FontWeight.normal,
+                                //   fontFamily: 'kanit',
+                                //   color: Color.fromRGBO(117, 117, 117, 1),
+                                // ),
+                                ),
+                            // if (checkonclickdraft == true) ...[
+                            //   // ignore: avoid_print
+
+                            //   if (profileProvider.profileData.idEmployees !=
+                            //           null &&
+                            //       state.expenseallowancebyid?.idExpense !=
+                            //           null &&
+                            //       state.expenseallowancebyid
+                            //               ?.idExpenseAllowance !=
+                            //           null &&
+                            //       state.expenseallowancebyid?.listExpense !=
+                            //           null) ...[
+                            //     DeleteDraft(
+                            //       allowanceBloc: allowanceBloc,
+                            //       idEmp:
+                            //           profileProvider.profileData.idEmployees!,
+                            //       idExpense:
+                            //           state.expenseallowancebyid!.idExpense!,
+                            //       idExpenseAllowance: state
+                            //           .expenseallowancebyid!
+                            //           .idExpenseAllowance!,
+                            //       listExpense:
+                            //           state.expenseallowancebyid!.listExpense,
+                            //       fileUrl:
+                            //           (state.expenseallowancebyid!.fileUrl !=
+                            //                   null)
+                            //               ? state.expenseallowancebyid!.fileUrl
+                            //               : null,
+                            //       onDeleted: () {
+                            //         setState(() {
+                            //           checkonclickdraft =
+                            //               false; // เมื่อลบเสร็จเรียกใช้ callback เพื่อ set checkonclickdraft เป็น false
+                            //         });
+                            //       },
+                            //     ),
+                            //   ]
+                            // ]
                           ],
                         ),
                         const Gap(20),
@@ -297,15 +479,23 @@ class _AllowanceGeneralInformationState
                         ),
                         const Gap(10),
                         CustomSelectedTabbar(
-                          labels: ['ในประเทศ', 'ต่างประเทศ'],
+                          labels: const ['ในประเทศ', 'ต่างประเทศ'],
                           selectedIndex: _tabTextIndexSelected,
                           onTabChanged: (index) {
-                            formData["isInternational"] =
-                                !formData["isInternational"];
-                            print(
-                                "formData['isInternational'] ${formData['isInternational']}");
                             setState(() {
-                              if (formData["isInternational"]) {
+                              // ตรวจสอบ index เพื่อกำหนดค่า isInternational และ formData['isInternational']
+                              if (index == 0) {
+                                isInternational = false;
+                                formData['isInternational'] =
+                                    isInternational ? 1 : 0;
+                              } else {
+                                isInternational = true;
+                                formData['isInternational'] =
+                                    isInternational ? 1 : 0;
+                              }
+
+                              // ตรวจสอบค่า isInternational เพื่อกำหนดค่า allowanceRate และ allowanceRateGoverment
+                              if (formData["isInternational"] == 1) {
                                 formData["allowanceRate"] =
                                     allowanceRateInternational;
                                 formData["allowanceRateGoverment"] =
@@ -315,41 +505,42 @@ class _AllowanceGeneralInformationState
                                 formData["allowanceRateGoverment"] =
                                     govermentAllowanceRate;
                               }
+
+                              // อื่น ๆ ที่คุณต้องการทำในการเปลี่ยนแท็บ
                               calculateSum(formData["listExpense"]);
                               _tabTextIndexSelected = index;
                               print(_tabTextIndexSelected);
-                              isInternational = !isInternational;
                               print(isInternational);
-                              setState(() {
-                                calculateSum(listExpense);
-                              });
+                              calculateSum(listExpense);
                             });
                           },
                         ),
-                        const Gap(20),
-                        Text(
-                          'CC ถึง',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.grey.shade600),
-                        ),
-                        const Gap(10),
-                        EmailMultiSelectDropDown(
-                          onOptionSelected: (selectedValues) {
-                            formData['cc_email'] = selectedValues;
-                            print(formData);
-                            print("FORMDATA EMAIL${formData['cc_email']}");
-                          },
-                          options: state.empsallrole!
-                              .map((employee) => ValueItem(
-                                    label:
-                                        '${employee.firstnameTh!}  ${employee.lastnameTh} \n${employee.email}',
-                                    value: employee.firstnameTh! +
-                                        employee.lastnameTh!,
-                                  ))
-                              .toList(),
-                        ),
+                        if (checkonclickdraft == false) ...[
+                          const Gap(20),
+                          Text(
+                            'CC ถึง',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.grey.shade600),
+                          ),
+                          const Gap(10),
+                          EmailMultiSelectDropDown(
+                            onOptionSelected: (selectedValues) {
+                              formData['cc_email'] = selectedValues;
+                              print(formData);
+                              print("FORMDATA EMAIL${formData['cc_email']}");
+                            },
+                            options: state.empsallrole!
+                                .map((employee) => ValueItem(
+                                      label:
+                                          '${employee.firstnameTh!}  ${employee.lastnameTh} \n${employee.email}',
+                                      value: employee.firstnameTh! +
+                                          employee.lastnameTh!,
+                                    ))
+                                .toList(),
+                          ),
+                        ],
                         const Gap(20),
                         RequiredText(
                           labelText: 'ผู้อนุมัติ',
@@ -361,6 +552,7 @@ class _AllowanceGeneralInformationState
                           onSuggestionTap: (selectedItem) {
                             if (selectedItem is SearchFieldListItem<String>) {
                               approverController.text = selectedItem.item!;
+
                               FocusScope.of(context).unfocus();
                             }
                             print(approverController.text);
@@ -387,7 +579,7 @@ class _AllowanceGeneralInformationState
                               print("Suggestion Texts: $suggestionTexts");
 
                               List<Object> suggestionIds = state.empsallrole!
-                                  .map((e) => e.idManagerLV1 ?? "")
+                                  .map((e) => e.idEmployees ?? "")
                                   .toList();
                               print("Suggestion Ids: $suggestionIds");
 
@@ -406,6 +598,7 @@ class _AllowanceGeneralInformationState
                                   setState(() {
                                     formData['approver'] = suggestionIds[index];
                                     print(formData['approver']);
+                                    print(" test ${suggestionIds[index]}");
                                   });
                                   return null;
                                 }
@@ -448,7 +641,9 @@ class _AllowanceGeneralInformationState
                                   PageTransition(
                                     duration: Durations.medium1,
                                     type: PageTransitionType.rightToLeft,
-                                    child: const AllowanceAddList(),
+                                    child: AllowanceAddList(
+                                      checkonclickdraft: checkonclickdraft,
+                                    ),
                                   ),
                                 );
                                 // Update listExpense with new data from dataInitial
@@ -649,7 +844,7 @@ class _AllowanceGeneralInformationState
                                                       Icon(IconaMoon
                                                           .arrowRight1),
                                                       Text(
-                                                          '${listExpense[index]['countDays']} วัน')
+                                                          '${(listExpense[index]['countDays'] as num).toStringAsFixed(2)} วัน')
                                                     ],
                                                   ),
                                                   Container(
@@ -861,6 +1056,7 @@ class _AllowanceGeneralInformationState
                             setState(() {
                               print(file);
                               selectedFile = file;
+
                               formData['file'] =
                                   file != null ? file.path : null;
                               print(formData['file']);
@@ -931,7 +1127,7 @@ class _AllowanceGeneralInformationState
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            onPressed: () {
+                            onPressed: () async {
                               FocusScope.of(context).unfocus();
                               if (_keyForm.currentState!.validate()) {
                                 if (formData['listExpense'] == null ||
@@ -949,6 +1145,7 @@ class _AllowanceGeneralInformationState
                                     fontSizeDescription: 15.0,
                                   );
                                 }
+                                formData['status'] == 1;
                                 formData['idPosition'] =
                                     profileProvider.profileData.idPosition!;
                                 debugPrint("success");
@@ -959,18 +1156,51 @@ class _AllowanceGeneralInformationState
                                 });
                                 print(profileProvider
                                     .profileData.idEmployees!.runtimeType);
+
                                 AddExpenseAllowanceModel model =
                                     convertFormDataToModel(formData);
-
-                                // print(profileProvider.profileData.idpo!);
+                                // เมื่อ AddExpenseAllowanceEvent เสร็จสิ้น, ทำตามเงื่อนไขนี้
                                 allowanceBloc.add(AddExpenseAllowanceEvent(
                                   idCompany:
                                       profileProvider.profileData.idEmployees!,
                                   addallowancedata: model,
                                 ));
-                                setState(() {
-                                  checkonclickdraft = true;
-                                });
+
+                                // Navigator.push(
+                                //     context,
+                                //     PageTransition(
+                                //       duration: Durations.medium1,
+                                //       type: PageTransitionType.rightToLeft,
+                                //       child: AllowanceEdit(
+                                //         profiledata:
+                                //             profileProvider.profileData,
+                                //         allowancebloc: allowanceBloc,
+                                //         idExepense: state
+                                //             .responseaddallowance!.idExpense!,
+                                //         checkonclickdraft: checkonclickdraft,
+                                //       ),
+                                //     ));
+                                // }
+                                // } else if (checkonclickdraft == true) {
+                                //   // allowanceBloc.add(UpdateExpenseAllowanceEvent(idEmp: profileProvider
+                                //   //       .profileData.idEmployees!, editallowancedata: ));
+                                // }
+                                // print(profileProvider.profileData.idpo!);
+
+                                // if (state.responseaddallowance != null &&
+                                //     state.responseaddallowance!.idExpense !=
+                                //         null) {
+                                //   allowanceBloc.add(GetExpenseAllowanceByIdData(
+                                //     idExpense:
+                                //         state.responseaddallowance!.idExpense!,
+                                //   ));
+                                // }
+
+                                // allowanceBloc.add(GetExpenseAllowanceByIdData(
+                                //   idExpense:
+                                //       state.responseaddallowance!.idExpense!,
+                                // ));
+
                                 // print(model.file.runtimeType);
                                 // ));
                               } else {
@@ -1015,7 +1245,48 @@ class _AllowanceGeneralInformationState
                             style: ElevatedButton.styleFrom(
                               primary: Color(0xffff99ca), // สีปุ่มสีส้ม
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              FocusScope.of(context).unfocus();
+                              if (_keyForm.currentState!.validate()) {
+                                if (formData['listExpense'] == null ||
+                                    formData['listExpense'].isEmpty) {
+                                  return CustomMotionToast.show(
+                                    context: context,
+                                    title: "ListExpense is empty",
+                                    description: "Please Add ListExpense",
+                                    icon: Icons.notification_important,
+                                    primaryColor: Colors.pink,
+                                    width: 300,
+                                    height: 100,
+                                    animationType: AnimationType.fromLeft,
+                                    fontSizeTitle: 18.0,
+                                    fontSizeDescription: 15.0,
+                                  );
+                                }
+                                formData['idPosition'] =
+                                    profileProvider.profileData.idPosition!;
+                                debugPrint("waiting");
+                                print(formData);
+                                formData.forEach((key, value) {
+                                  print('$key: ${value.runtimeType}');
+                                });
+                                print(profileProvider
+                                    .profileData.idEmployees!.runtimeType);
+                                formData['status'] = 2;
+                                AddExpenseAllowanceModel model =
+                                    convertFormDataToModel(formData);
+                                // เมื่อ AddExpenseAllowanceEvent เสร็จสิ้น, ทำตามเงื่อนไขนี้
+                                allowanceBloc.add(AddExpenseAllowanceEvent(
+                                  idCompany:
+                                      profileProvider.profileData.idEmployees!,
+                                  addallowancedata: model,
+                                ));
+                              } else {
+                                print(formData);
+                                debugPrint("not success");
+                                print(approverController.text);
+                              }
+                            },
                           ),
                         ),
                         const Gap(10),
@@ -1034,3 +1305,27 @@ class _AllowanceGeneralInformationState
     );
   }
 }
+
+// Future<void> updateFormdatatobloc(
+//     GetExpenseAllowanceByIdEntity datatobyid,
+//     Map<String, dynamic> updateformdata,
+//     List<Map<String, dynamic>> listExpense) async {
+//   updateformdata['nameExpense'] = datatobyid.nameExpense;
+//   updateformdata['isInternational'] = datatobyid.isInternational;
+//   updateformdata['listExpense'] = datatobyid.listExpense;
+//   updateformdata['remark'] = datatobyid.remark;
+//   updateformdata['typeExpense'] = datatobyid.expenseType;
+//   updateformdata['typeExpenseName'] = datatobyid.typeExpenseName;
+//   updateformdata['status'] = datatobyid.status;
+//   updateformdata['sumAllowance'] = datatobyid.sumAllowance;
+//   updateformdata['sumSurplus'] = datatobyid.sumSurplus;
+//   updateformdata['sumDays'] = datatobyid.sumDays;
+//   updateformdata['sumNet'] = datatobyid.net;
+//   updateformdata['replyComment'] = datatobyid.comments;
+//   updateformdata['approver'] = datatobyid.idEmpApprover;
+//   listExpense =
+//       datatobyid.listExpense!.map((entity) => entity.toJson()).toList();
+//   updateformdata['listExpense'] = listExpense;
+
+//   //
+// }

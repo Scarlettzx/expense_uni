@@ -12,7 +12,11 @@ import 'package:uni_expense/src/features/user/allowance/presentation/widgets/cus
 // import '../../../expense/presentation/widgets/calender_page.dart';
 
 class AllowanceAddList extends StatefulWidget {
-  const AllowanceAddList({super.key});
+  final bool checkonclickdraft;
+  const AllowanceAddList({
+    super.key,
+    required this.checkonclickdraft,
+  });
 
   @override
   State<AllowanceAddList> createState() => _AllowanceAddListState();
@@ -40,19 +44,31 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
   @override
   void initState() {
     super.initState();
+    print(widget.checkonclickdraft);
     initializeDateFormatting('th');
     setdefault();
   }
 
   void addData() {
-    ExpenseData newExpenseData = ExpenseData(
-      // startDate: DateFormat('yyyy/MM/dd HH:mm')
-      //     .format(DateTime.parse(startDateController.text)),
-      startDate: startDateController.text,
-      endDate: endDateController.text,
-      description: descriptionController.text,
-      countDays: double.parse(betweenDays.text),
-    );
+    ExpenseData newExpenseData;
+
+    if (widget.checkonclickdraft == true) {
+      print('yes');
+      newExpenseData = ExpenseData(
+        idExpenseAllowanceItem: null,
+        startDate: startDateController.text,
+        endDate: endDateController.text,
+        description: descriptionController.text,
+        countDays: double.parse(betweenDays.text),
+      );
+    } else {
+      newExpenseData = ExpenseData(
+        startDate: startDateController.text,
+        endDate: endDateController.text,
+        description: descriptionController.text,
+        countDays: double.parse(betweenDays.text),
+      );
+    }
 // อัปเดต List ใน dataInitial โดยเพิ่มข้อมูลใหม่
     List<ExpenseData> updatedDataInitial = [
       // ...widget.dataInitial,
@@ -436,12 +452,14 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
 }
 
 class ExpenseData {
+  int? idExpenseAllowanceItem;
   String? startDate;
   String? endDate;
   String? description;
-  double? countDays;
+  num? countDays;
 
   ExpenseData({
+    this.idExpenseAllowanceItem,
     required this.startDate,
     required this.endDate,
     required this.description,
@@ -451,6 +469,7 @@ class ExpenseData {
   // Convert ExpenseData to Map
   Map<String, dynamic> toJson() {
     return {
+      'idExpenseAllowanceItem': idExpenseAllowanceItem,
       'startDate': startDate,
       'endDate': endDate,
       'description': description,

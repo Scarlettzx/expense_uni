@@ -19,10 +19,14 @@ final class AllowanceFinish extends AllowanceState {
   final List<EmployeesAllRolesEntity>? empsallrole;
   final ResponseAllowanceEntity? responseaddallowance;
   final GetExpenseAllowanceByIdEntity? expenseallowancebyid;
+  final ResponseDoDeleteAllowanceEntity? responsedeleteallowance;
+  final ResponseEditDraftAllowanceEntity? responseeditallowance;
   const AllowanceFinish({
     this.empsallrole,
     this.responseaddallowance,
     this.expenseallowancebyid,
+    this.responsedeleteallowance,
+    this.responseeditallowance,
   });
 
   @override
@@ -30,6 +34,7 @@ final class AllowanceFinish extends AllowanceState {
         empsallrole,
         responseaddallowance,
         expenseallowancebyid,
+        responsedeleteallowance
       ];
 }
 

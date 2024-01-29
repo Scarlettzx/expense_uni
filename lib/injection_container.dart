@@ -1,7 +1,13 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:uni_expense/src/features/user/allowance/domain/usecases/edit_draft_allowance.dart';
 import 'package:uni_expense/src/features/user/manageitems/domain/repositories/manageitems_repository.dart';
 import 'package:uni_expense/src/features/user/manageitems/presentation/bloc/manage_items_bloc.dart';
+import 'package:uni_expense/src/features/user/welfare/data/data_sources/welfare_remote_datasource.dart';
+import 'package:uni_expense/src/features/user/welfare/data/repositories/welfare_repositoryimpl.dart';
+import 'package:uni_expense/src/features/user/welfare/domain/repositories/welfare_repository.dart';
+import 'package:uni_expense/src/features/user/welfare/domain/usecases/usecases.dart';
+import 'package:uni_expense/src/features/user/welfare/presentation/bloc/welfare_bloc.dart';
 import 'src/core/features/login/data/data_sources/remote/login_api.dart';
 import 'src/core/features/login/data/repositories/login_repository_impl.dart';
 import 'src/core/features/login/domain/repositories/login_repository.dart';
@@ -49,9 +55,11 @@ Future<void> init() async {
   // ! Allowance
   // * Bloc
   sl.registerFactory(() => AllowanceBloc(
+        deleteExpensallowancedata: sl(),
         getEmployeeAllrolesdata: sl(),
         addexpenseallowancedata: sl(),
         getexpenseAllowancebyId: sl(),
+        updateAllowancedata: sl(),
       ));
   // * Usecase
   sl.registerLazySingleton(() => usecases_allowance.GetEmployeesAllRoles(
@@ -61,6 +69,12 @@ Future<void> init() async {
         repository: sl(),
       ));
   sl.registerLazySingleton(() => GetExpenseAllowanceById(
+        repository: sl(),
+      ));
+  sl.registerLazySingleton(() => DeleteAllowance(
+        repository: sl(),
+      ));
+  sl.registerLazySingleton(() => EditAllowance(
         repository: sl(),
       ));
   // * Repository
@@ -85,6 +99,24 @@ Future<void> init() async {
   // * Data Source
   sl.registerLazySingleton<ManageItemsRemoteDatasource>(
       () => ManageItemsRemoteDatasourceImpl(client: sl()));
+
+// ! Welfare
+  // * Bloc
+  sl.registerFactory(() => WelfareBloc(
+        getFamilysdata: sl(),
+        getEmployeeAllrolesdata: sl(),
+        addWelfare: sl(),
+      ));
+  // * Usecase
+  sl.registerLazySingleton(() => GetEmployeesAllRolesWelfare(repository: sl()));
+  sl.registerLazySingleton(() => GetFamilys(repository: sl()));
+  sl.registerLazySingleton(() => AddWelfare(repository: sl()));
+  // * Repository
+  sl.registerLazySingleton<WelfareRepository>(
+      () => WelfareRepositoryImpl(remoteDatasource: sl()));
+  // * Data Source
+  sl.registerLazySingleton<WelfareRemoteDatasource>(
+      () => WelfareRemoteDatasourceImpl(client: sl()));
 
 // ! User
   // * Bloc

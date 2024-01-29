@@ -35,11 +35,11 @@ class GetExpenseAllowanceByIdData extends AllowanceEvent {
       ];
 }
 
-class DeleteExpenseAllowance extends AllowanceEvent {
+class DeleteExpenseAllowanceEvent extends AllowanceEvent {
   final int idEmp;
-  final DeleteExpenseAllowance deleteallowancedata;
+  final DeleteExpenseAllowanceModel deleteallowancedata;
 
-  const DeleteExpenseAllowance({
+  const DeleteExpenseAllowanceEvent({
     required this.idEmp,
     required this.deleteallowancedata,
   });
@@ -47,5 +47,20 @@ class DeleteExpenseAllowance extends AllowanceEvent {
   List<Object?> get props => [
         idEmp,
         deleteallowancedata,
+      ];
+}
+
+class UpdateExpenseAllowanceEvent extends AllowanceEvent {
+  final int idEmp;
+  final EditDraftAllowanceModel editallowancedata;
+
+  const UpdateExpenseAllowanceEvent({
+    required this.idEmp,
+    required this.editallowancedata,
+  });
+  @override
+  List<Object?> get props => [
+        idEmp,
+        editallowancedata,
       ];
 }

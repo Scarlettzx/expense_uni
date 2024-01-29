@@ -19,6 +19,7 @@ class GetExpenseAllowanceByIdEntity extends Equatable {
   final List<dynamic>? actions;
   final int? idEmpApprover;
   final String? approverName;
+  final FileUrl? fileUrl;
 
   const GetExpenseAllowanceByIdEntity({
     required this.documentId,
@@ -39,6 +40,7 @@ class GetExpenseAllowanceByIdEntity extends Equatable {
     required this.actions,
     required this.idEmpApprover,
     required this.approverName,
+    required this.fileUrl,
   });
 
   @override
@@ -93,4 +95,20 @@ class ListExpensegetallowancebyidEntity extends Equatable {
         "description": description,
         "countDays": countDays,
       };
+}
+
+class FileUrl extends Equatable {
+  final String? url;
+  final String? path;
+
+  const FileUrl({
+    required this.url,
+    required this.path,
+  });
+
+  @override
+  List<Object?> get props => [
+        url,
+        path,
+      ];
 }

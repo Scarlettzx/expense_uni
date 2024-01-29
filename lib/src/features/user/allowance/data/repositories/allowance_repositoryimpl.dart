@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:uni_expense/src/core/error/failure.dart';
 import 'package:uni_expense/src/features/user/allowance/data/models/delete_expenseallowance_model.dart';
+import 'package:uni_expense/src/features/user/allowance/data/models/edit_draft_allowance_model.dart';
 import 'package:uni_expense/src/features/user/allowance/domain/repositories/allowance_repository.dart';
 
 import '../../../../../core/error/exception.dart';
@@ -24,10 +25,9 @@ class AllowanceRepositoryImpl implements AllowanceRepository {
 
   @override
   Future<Either<Failure, ResponseAllowanceEntity>> addExpenseAllowance(
-      int idCompany, AddExpenseAllowanceModel formData) async {
+      int idEmp, AddExpenseAllowanceModel formData) async {
     try {
-      final data =
-          await remoteDatasource.addExpenseAllowance(idCompany, formData);
+      final data = await remoteDatasource.addExpenseAllowance(idEmp, formData);
       return Right(data);
     } on ServerException {
       return Left(ServerFailure());
@@ -54,6 +54,19 @@ class AllowanceRepositoryImpl implements AllowanceRepository {
     try {
       final data =
           await remoteDatasource.deleteExpenseAllowance(idEmp, datadelete);
+      return Right(data);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseEditDraftAllowanceEntity>>
+      updateDraftExpenseAllowance(
+          int idEmp, EditDraftAllowanceModel dataupdate) async {
+    try {
+      final data =
+          await remoteDatasource.updateExpenseAllowance(idEmp, dataupdate);
       return Right(data);
     } on ServerException {
       return Left(ServerFailure());

@@ -12,7 +12,7 @@ import 'package:uni_expense/src/features/user/home/presentation/widgets/texthead
 // import 'package:uni_expense/src/features/user/home/presentation/widgets/textmenu.dart';
 import 'package:uni_expense/src/features/user/home/presentation/widgets/textsubheader.dart';
 import 'package:uni_expense/src/features/user/manageitems/presentation/pages/manageitems.dart';
-import 'package:uni_expense/src/features/user/medicalBenefits/presentation/pages/general_infor.dart';
+import 'package:uni_expense/src/features/user/welfare/presentation/pages/general_infor.dart';
 
 import '../../../../../core/error/token_expires.dart';
 import '../../../../../core/features/login/presentation/pages/login_page.dart';

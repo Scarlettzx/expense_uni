@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  flutter_localization
   flutter_secure_storage_linux
-  modal_progress_hud_nsn
   smart_auth
   url_launcher_linux
 )

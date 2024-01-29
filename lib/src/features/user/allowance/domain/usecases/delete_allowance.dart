@@ -9,7 +9,7 @@ class DeleteAllowance {
   DeleteAllowance({required this.repository});
 
   Future<Either<Failure, ResponseDoDeleteAllowanceEntity>> call(
-      int idCompany, DeleteExpenseAllowanceModel data) async {
-    return await repository.deleteExpenseAllowance(idCompany, data);
+      int idEmp, DeleteExpenseAllowanceModel data) async {
+    return await repository.deleteExpenseAllowance(idEmp, data);
   }
 }

@@ -28,6 +28,7 @@ class GetExpenseAllowanceByIdModel extends GetExpenseAllowanceByIdEntity {
     required List<dynamic>? actions,
     required int? idEmpApprover,
     required String? approverName,
+    required FileUrlModel? fileUrl,
   }) : super(
           documentId: documentId,
           idExpense: idExpense,
@@ -47,6 +48,7 @@ class GetExpenseAllowanceByIdModel extends GetExpenseAllowanceByIdEntity {
           actions: actions,
           idEmpApprover: idEmpApprover,
           approverName: approverName,
+          fileUrl: fileUrl,
         );
 
   factory GetExpenseAllowanceByIdModel.fromJson(Map<String, dynamic> json) =>
@@ -76,6 +78,8 @@ class GetExpenseAllowanceByIdModel extends GetExpenseAllowanceByIdEntity {
             : List<dynamic>.from(json["actions"]!.map((x) => x)),
         idEmpApprover: json["idEmpApprover"],
         approverName: json["approverName"],
+        fileUrl:
+            json["fileURL"] == null ? null : FileUrlModel.fromJson(json["fileURL"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -128,6 +132,21 @@ class ListExpensegetallowancebyidModel
         description: json["description"],
         countDays: json["countDays"],
       );
+}
 
- 
+class FileUrlModel extends FileUrl {
+  const FileUrlModel({
+    required String? url,
+    required String? path,
+  }) : super(path: path, url: url);
+
+  factory FileUrlModel.fromJson(Map<String, dynamic> json) => FileUrlModel(
+        url: json["URL"],
+        path: json["path"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "URL": url,
+        "path": path,
+      };
 }

@@ -63,7 +63,7 @@ class ListExpenseEntity extends Equatable {
   final String? startDate;
   final String? endDate;
   final String? description;
-  final double? countDays;
+  final num? countDays;
 
   const ListExpenseEntity({
     required this.startDate,

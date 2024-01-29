@@ -18,7 +18,7 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
   const AddExpenseAllowanceModel({
     required String? nameExpense,
     required int? isInternational,
-    required List<ListExpenseModel>? listExpense,
+    required List<AddExpenseListExpenseModel>? listExpense,
     required PlatformFile? file,
     required String? remark,
     required int? typeExpense,
@@ -56,8 +56,8 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
         isInternational: json["isInternational"],
         listExpense: json["listExpense"] == null
             ? []
-            : List<ListExpenseModel>.from(
-                json["listExpense"]!.map((x) => ListExpenseModel.fromJson(x))),
+            : List<AddExpenseListExpenseModel>.from(json["listExpense"]!
+                .map((x) => AddExpenseListExpenseModel.fromJson(x))),
         file: json["file"],
         remark: json["remark"],
         typeExpense: json["typeExpense"],
@@ -80,7 +80,8 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
         "isInternational": isInternational,
         "listExpense": listExpense == null
             ? []
-            : List<ListExpenseModel>.from(listExpense!.map((x) => x.toJson())),
+            : List<AddExpenseListExpenseModel>.from(
+                listExpense!.map((x) => x.toJson())),
         "file": file,
         "remark": remark,
         "typeExpense": typeExpense,
@@ -97,21 +98,21 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
       };
 }
 
-class ListExpenseModel extends ListExpenseEntity {
-  const ListExpenseModel({
+class AddExpenseListExpenseModel extends ListExpenseEntity {
+  const AddExpenseListExpenseModel({
     required String? startDate,
     required String? endDate,
     required String? description,
-    required double? countDays,
+    required num? countDays,
   }) : super(
             startDate: startDate,
             endDate: endDate,
             description: description,
             countDays: countDays);
 
-  factory ListExpenseModel.fromJson(Map<String, dynamic> json) {
+  factory AddExpenseListExpenseModel.fromJson(Map<String, dynamic> json) {
     try {
-      return ListExpenseModel(
+      return AddExpenseListExpenseModel(
         startDate: json["startDate"],
         endDate: json["endDate"],
         description: json["description"],
@@ -123,7 +124,7 @@ class ListExpenseModel extends ListExpenseEntity {
       // ในกรณีที่ Format ไม่ถูกต้อง
       // ทำการ handle ตามที่คุณต้องการ
       print("Invalid date format: ${json["startDate"]}");
-      return ListExpenseModel(
+      return AddExpenseListExpenseModel(
         startDate: null,
         endDate: null,
         description: json["description"],
