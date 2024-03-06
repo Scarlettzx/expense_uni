@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ import '../../../../../components/motion_toast.dart';
 import '../../../../../core/features/user/domain/entity/profile_entity.dart';
 import '../../../manageitems/presentation/pages/manageitems.dart';
 import '../../data/models/edit_draft_allowance_model.dart';
+import '../../domain/entities/entities.dart';
 import '../bloc/allowance_bloc.dart';
 import '../widgets/customappbar.dart';
 import '../widgets/customtextformfield.dart';
@@ -32,7 +34,7 @@ class AllowanceEdit extends StatefulWidget {
   final int idExepense;
   final ProfileEntity profiledata;
 
-  AllowanceEdit({
+  const AllowanceEdit({
     super.key,
     required this.allowancebloc,
     required this.checkonclickdraft,
@@ -49,16 +51,20 @@ class _AllowanceEditState extends State<AllowanceEdit> {
   final nameExpenseController = TextEditingController();
   final approverController = TextEditingController();
   final remarkController = TextEditingController();
+  List<int> deletedItem = [];
+  FileUrl? showimg;
   String _enteredText = '';
   List<Map<String, dynamic>> listExpense = [];
   int isInternational = 0;
   int idempapprover = 0;
+  bool checkdohaveimg = true;
   // bool checkonclickdraft = false;
   PlatformFile? selectedFile;
   static const allowanceRate = 500;
   static const allowanceRateInternational = 4000;
   static const govermentAllowanceRate = 270;
   static const govermentAllowanceRateInternational = 3100;
+  int _selectedIndex = -1;
   double sumDays = 0.0;
   double sumAllowance = 0.0;
   double totalGovermentAllowance = 0.0;
@@ -74,6 +80,12 @@ class _AllowanceEditState extends State<AllowanceEdit> {
       idExpense: widget.idExepense,
     ));
     print(status);
+  }
+
+  void callGetExpenseAllowanceByIdData() {
+    widget.allowancebloc.add(GetExpenseAllowanceByIdData(
+      idExpense: widget.idExepense,
+    ));
   }
 
   void calculateSum(List<dynamic> array) {
@@ -106,6 +118,57 @@ class _AllowanceEditState extends State<AllowanceEdit> {
     // print(targetFormData);
   }
 
+  Future<void> _showImageDialog(
+      ui.Image image, NetworkImage networkImage) async {
+    Size screenSize = MediaQuery.of(context).size;
+    await showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          child: Container(
+            width: screenSize.width >= image.width.toDouble()
+                ? image.width
+                    .toDouble() // ถ้าขนาดรูปภาพน้อยกว่าหรือเท่ากับขนาดหน้าจอ ให้กำหนดความกว้างเป็นขนาดของรูปภาพ
+                : double
+                    .infinity, // ถ้าขนาดรูปภาพมากกว่าขนาดหน้าจอ ให้กำหนดความกว้างเป็นขนาดหน้าจอ
+            height: screenSize.height >= image.height.toDouble()
+                ? image.height.toDouble()
+                : double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: networkImage,
+                  fit: (screenSize.width >= image.width.toDouble() &&
+                          screenSize.height >= image.height.toDouble())
+                      ? BoxFit.cover
+                      : BoxFit.contain),
+              color: Colors.black,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<ui.Image> _getImageSize(String imageUrl) async {
+    final NetworkImage networkImage = NetworkImage(imageUrl);
+    final ImageStream stream = networkImage.resolve(ImageConfiguration.empty);
+    final Completer<ui.Image> completer = Completer<ui.Image>();
+    late ImageStreamListener listener;
+    listener = ImageStreamListener(
+      (ImageInfo info, bool _) {
+        final image = info.image;
+        completer.complete(image);
+        stream.removeListener(listener);
+      },
+      onError: (Object exception, StackTrace? stackTrace) {
+        completer.completeError(exception, stackTrace);
+        stream.removeListener(listener);
+      },
+    );
+    stream.addListener(listener);
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +184,8 @@ class _AllowanceEditState extends State<AllowanceEdit> {
             create: (context) => widget.allowancebloc,
             child: BlocConsumer<AllowanceBloc, AllowanceState>(
               listener: (context, state) {
+                print(state);
+                print("passlistener");
                 print(status);
                 if (state is AllowanceFinish &&
                     state.expenseallowancebyid != null &&
@@ -140,6 +205,13 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                   remarkController.text = state.expenseallowancebyid!.remark!;
                   isInternational =
                       state.expenseallowancebyid!.isInternational! ? 1 : 0;
+                  if (state.expenseallowancebyid!.fileUrl != null) {
+                    showimg = state.expenseallowancebyid!.fileUrl!;
+                    checkdohaveimg = true;
+                  } else {
+                    showimg = null;
+                    checkdohaveimg = false;
+                  }
                   calculateSum(listExpense);
                 } else if (state is AllowanceFinish && status == 2) {
                   Navigator.pushReplacement(
@@ -195,7 +267,7 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                                   null &&
                               state.expenseallowancebyid?.listExpense !=
                                   null) ...[
-                            DeleteDraft(
+                            DeleteDraftAllowance(
                                 allowanceBloc: widget.allowancebloc,
                                 idEmp: widget.profiledata.idEmployees,
                                 idExpense:
@@ -236,6 +308,7 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                           return null;
                         },
                       ),
+                      const Gap(20),
                       Text(
                         'สถานที่เกิดค่าใช้จ่าย',
                         style: TextStyle(
@@ -289,7 +362,6 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                         onSuggestionTap: (selectedItem) {
                           if (selectedItem is SearchFieldListItem<String>) {
                             approverController.text = selectedItem.item!;
-
                             FocusScope.of(context).unfocus();
                           }
                           print(approverController.text);
@@ -370,7 +442,7 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                           InkWell(
                             borderRadius: BorderRadius.circular(30.0),
                             onTap: () async {
-                              List<ExpenseData> dataInitial =
+                              List<ExpenseDataDraft>? dataInitial =
                                   await Navigator.push(
                                 context,
                                 PageTransition(
@@ -381,11 +453,10 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                                   ),
                                 ),
                               );
-                              // Update listExpense with new data from dataInitial
-                              ExpenseData.updateListExpense(
-                                  dataInitial, listExpense);
-// print()
-                              // Print the updated listExpense as JSON
+                              (dataInitial != null && dataInitial.isNotEmpty)
+                                  ? ExpenseData.updateListExpense(
+                                      dataInitial, listExpense)
+                                  : null;
                               print(json.encode(listExpense));
                               // getFormData()['listExpense'] = listExpense;
                               // print(
@@ -455,7 +526,44 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                                                 BorderRadius.circular(20),
                                             icon: IconaMoon.edit,
                                             onPressed: (_) async {
-                                              print('edit');
+                                              setState(() {
+                                                _selectedIndex = index;
+                                              });
+                                              List<ExpenseDataDraft>?
+                                                  dataInitial =
+                                                  await Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                  duration: Durations.medium1,
+                                                  type: PageTransitionType
+                                                      .rightToLeft,
+                                                  child: AllowanceAddList(
+                                                    checkonclickdraft: widget
+                                                        .checkonclickdraft,
+                                                    listexpense:
+                                                        listExpense[index],
+                                                  ),
+                                                ),
+                                              );
+                                              if (dataInitial != null &&
+                                                  dataInitial.isNotEmpty) {
+                                                listExpense[_selectedIndex]
+                                                    .clear();
+                                                dataInitial
+                                                    .map((expense) =>
+                                                        expense.toJson())
+                                                    .toList()
+                                                    .forEach((item) {
+                                                  listExpense[_selectedIndex]
+                                                      .addAll(item);
+                                                });
+                                              } else {
+                                                null;
+                                              }
+                                              print(listExpense);
+                                              setState(() {
+                                                calculateSum(listExpense);
+                                              });
                                             },
                                             backgroundColor: Colors.amber,
                                             foregroundColor: Colors.white,
@@ -468,6 +576,13 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                                             foregroundColor: Colors.white,
                                             onPressed: (_) {
                                               setState(() {
+                                                if (listExpense[index][
+                                                        'idExpenseAllowanceItem'] !=
+                                                    null) {
+                                                  deletedItem.add(listExpense[
+                                                          index][
+                                                      'idExpenseAllowanceItem']);
+                                                }
                                                 listExpense.removeAt(index);
                                                 // recieveData!.clear();
                                                 calculateSum(listExpense);
@@ -797,19 +912,55 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                         height: 1,
                       ),
                       const Gap(25),
-                      FilePickerComponent(
-                        onFileSelected: (file) {
-                          setState(() {
-                            print(file);
-                            selectedFile = file;
+                      if (checkdohaveimg == false) ...[
+                        FilePickerComponent(
+                          onFileSelected: (file) {
+                            setState(() {
+                              print(file);
+                              selectedFile = file;
 
-                            // getFormData()['file'] =
-                            //     file != null ? file.path : null;
-                            // print(getFormData()['file']);
-                            // print(formData);
-                          });
-                        },
-                      ),
+                              // getFormData()['file'] =
+                              //     file != null ? file.path : null;
+                              // print(getFormData()['file']);
+                              // print(formData);
+                            });
+                          },
+                        ),
+                      ] else if (checkdohaveimg == true && showimg != null) ...[
+                        InkWell(
+                          onTap: () async {
+                            // ดึงขนาดหน้าจอ
+
+                            // ดึงขนาดรูปภาพจาก URL
+                            final networkImage = NetworkImage(showimg!.url!);
+                            final ui.Image image =
+                                await _getImageSize(showimg!.url!);
+                            await _showImageDialog(image, networkImage);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color.fromRGBO(255, 234, 239, 0.29),
+                            ),
+                            width: double.infinity,
+                            child: ListTile(
+                              leading: Icon(Icons.insert_drive_file),
+                              title: Text(showimg!.path.toString()),
+                              trailing: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    checkdohaveimg = false;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                       const Gap(25),
                       Divider(
                         color: Colors.grey.shade300,
@@ -828,7 +979,7 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                         width: double.infinity,
                         child: TextFormField(
                           controller: remarkController,
-                          onChanged: (value) {  
+                          onChanged: (value) {
                             setState(() {
                               _enteredText = value;
                               // getFormData()['remark'] = remarkController.text;
@@ -974,12 +1125,14 @@ class _AllowanceEditState extends State<AllowanceEdit> {
                                     sumDays: sumDays.toInt(),
                                     sumNet: sumNet.toInt(),
                                     comment: 'null',
-                                    deletedItem: [],
+                                    deletedItem: deletedItem,
                                     idEmpApprover: idempapprover,
                                   ),
                                 ),
                               );
-
+                              setState(() {
+                                callGetExpenseAllowanceByIdData();
+                              });
                               // print(model.file.runtimeType);
                               // ));
                             } else {

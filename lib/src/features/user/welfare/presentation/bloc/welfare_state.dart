@@ -18,17 +18,26 @@ final class WelfareFinish extends WelfareState {
   final List<EmployeesAllRolesEntity>? empsallrole;
   final List<FamilysEntity>? resfamily;
   final ResponseWelfareEntity? resaddwelfare;
+  final GetWelfareByIdEntity? getwelfarebyid;
+  final ResponseEditWelfareEntity? reseditwelfare;
+  final ResponseDoDeleteWelfareEntity? resdeletewelfare;
 
   const WelfareFinish({
     this.empsallrole,
     this.resfamily,
     this.resaddwelfare,
+    this.getwelfarebyid,
+    this.reseditwelfare,
+    this.resdeletewelfare,
   });
   @override
   List<Object?> get props => [
         empsallrole,
         resfamily,
         resaddwelfare,
+        getwelfarebyid,
+        reseditwelfare,
+        resdeletewelfare,
       ];
 }
 

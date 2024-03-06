@@ -19,7 +19,7 @@ class ManageItemsTabBar extends StatelessWidget {
         },
         splashFactory: NoSplash.splashFactory,
         splashBorderRadius: BorderRadius.all(
-          Radius.circular(30),
+          Radius.circular(30),  
         ),
         isScrollable: true,
         tabs: [

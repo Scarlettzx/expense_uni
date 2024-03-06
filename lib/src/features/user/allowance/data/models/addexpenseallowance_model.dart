@@ -30,7 +30,7 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
     required int? sumDays,
     required int? sumNet,
     required int? idEmpApprover,
-    required List<dynamic>? ccEmail,
+    required String? ccEmail,
     required int? idPosition,
   }) : super(
             nameExpense: nameExpense,

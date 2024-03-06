@@ -1,11 +1,13 @@
 // import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../../data/models/delete_expenseallowance_model.dart';
 import '../../domain/entities/entities.dart';
 import '../bloc/allowance_bloc.dart';
+import '../pages/allowance_general_infor.dart';
 
-class DeleteDraft extends StatelessWidget {
+class DeleteDraftAllowance extends StatelessWidget {
   final AllowanceBloc allowanceBloc;
   final int? idEmp;
   final int? idExpense;
@@ -14,7 +16,7 @@ class DeleteDraft extends StatelessWidget {
   final FileUrl? fileUrl;
   final VoidCallback onDeleted;
 
-  DeleteDraft({
+  DeleteDraftAllowance({
     super.key,
     required this.allowanceBloc,
     required this.idEmp,
@@ -27,7 +29,7 @@ class DeleteDraft extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<int>? idExpenseAllowanceItems = [];
   bool isAttachFile = false;
-  var filepath = null;
+  String? filepath;
   @override
   Widget build(BuildContext context) {
     if (idEmp != null &&
@@ -89,6 +91,16 @@ class DeleteDraft extends StatelessWidget {
               ),
             ));
             onDeleted();
+            Navigator.pushAndRemoveUntil(
+              context,
+              PageTransition(
+                duration: Durations.medium1,
+                type: PageTransitionType.rightToLeft,
+                child: const AllowanceGeneralInformation(),
+              ),
+              (route) => route.isFirst,
+              // ใช้เงื่อนไขนี้เพื่อลบทุกหน้าอื่นที่ไม่ใช่หน้าแรกออกจาก stack
+            );
             print(idExpenseAllowanceItems);
             print(idEmp);
             print(idExpense);

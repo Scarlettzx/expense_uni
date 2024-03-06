@@ -146,7 +146,7 @@ class ManageItemsAddList extends StatelessWidget {
                             PageTransition(
                                 duration: Durations.medium1,
                                 type: PageTransitionType.rightToLeft,
-                                child: const FareGeneralInformation()),
+                                child: FareGeneralInformation()),
                             // MaterialPageRoute(
                             //     builder: (context) => const Expense()),
                           );

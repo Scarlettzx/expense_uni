@@ -27,13 +27,9 @@ class CustomSearchField extends StatelessWidget {
             return validationError;
           }
         }
-
-        // Additional validation checks...
         if (value == null || value.isEmpty) {
           return 'Please enter a valid value';
         }
-
-        // Validation passed
         return null;
       },
       itemHeight: 50,

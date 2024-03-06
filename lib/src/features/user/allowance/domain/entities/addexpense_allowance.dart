@@ -16,7 +16,7 @@ class AddExpenseAllowanceEntity extends Equatable {
   final int? sumDays;
   final int? sumNet;
   final int? idEmpApprover;
-  final List<dynamic>? ccEmail;
+  final String? ccEmail;
   final int? idPosition;
 
   const AddExpenseAllowanceEntity({

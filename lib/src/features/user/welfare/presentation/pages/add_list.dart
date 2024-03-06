@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:uni_expense/src/features/user/allowance/presentation/widgets/customappbar.dart';
-import 'package:uni_expense/src/features/user/welfare/presentation/pages/general_infor.dart';
 
 import '../../../../../components/custominputdecoration.dart';
 
 // import '../../../expense/presentation/widgets/calender_page.dart';
 class MedicalBefitsAddList extends StatefulWidget {
-  const MedicalBefitsAddList({super.key});
+  final bool checkonclickdraft;
+  const MedicalBefitsAddList({
+    super.key,
+    required this.checkonclickdraft,
+  });
 
   @override
   State<MedicalBefitsAddList> createState() => _MedicalBefitsAddListState();
@@ -31,6 +31,7 @@ class _MedicalBefitsAddListState extends State<MedicalBefitsAddList> {
   @override
   void initState() {
     super.initState();
+    print(widget.checkonclickdraft);
     setdefault();
   }
 
@@ -52,39 +53,41 @@ class _MedicalBefitsAddListState extends State<MedicalBefitsAddList> {
   }
 
   void addData() {
-    WelfareData welfareData;
-    welfareData = WelfareData(
-      description: descriptionController.text,
-      price: priceController.text.replaceAll(",", ""),
-    );
-    // อัปเดต List ใน dataInitial โดยเพิ่มข้อมูลใหม่
-    List<WelfareData> updatedDataInitial = [
-      // ...widget.dataInitial,
-      welfareData
-    ];
-    Navigator.pop(context, updatedDataInitial);
-  }
-
-  Future<void> checkselectdate() async {
-    if (selectedDate != null) {
-      setState(() {
-        // DateFormat
-        // selectedDay = selectedDate;
-
-        // var thaiLocale = const Locale('th', 'TH');
-        var formatter = DateFormat('yyyy/MM/dd');
-        dateDateController.text = formatter.format(selectedDate!);
-
-        print('data ${dateDateController.text}');
-        var formattedDate = thaiDateFormat
-            .format(selectedDate!)
-            .replaceAll('${selectedDate!.year}', '${selectedDate!.year + 543}');
-        selectDateController.text = formattedDate;
-        print(selectedDate);
-        print((selectDateController.text));
-      });
+    if (widget.checkonclickdraft == false) {
+      WelfareData welfareData = WelfareData(
+        description: descriptionController.text,
+        price: priceController.text.replaceAll(",", ""),
+      );
+      List<WelfareData> updatedDataInitial = [welfareData];
+      Navigator.pop(context, updatedDataInitial);
+    } else {
+      WelfareDataDraft welfareData = WelfareDataDraft(
+          idExpenseWelfareItem: null,
+          description: descriptionController.text,
+          price: priceController.text.replaceAll(",", ""),
+          withdrawablePrice: null,
+          difference: null);
+      List<WelfareDataDraft> updatedDataInitial = [welfareData];
+      Navigator.pop(context, updatedDataInitial);
     }
   }
+
+  // Future<void> checkselectdate() async {
+  //   if (selectedDate != null) {
+  //     setState(() {
+  //       var formatter = DateFormat('yyyy/MM/dd');
+  //       dateDateController.text = formatter.format(selectedDate!);
+
+  //       print('data ${dateDateController.text}');
+  //       var formattedDate = thaiDateFormat
+  //           .format(selectedDate!)
+  //           .replaceAll('${selectedDate!.year}', '${selectedDate!.year + 543}');
+  //       selectDateController.text = formattedDate;
+  //       print(selectedDate);
+  //       print((selectDateController.text));
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -105,84 +108,84 @@ class _MedicalBefitsAddListState extends State<MedicalBefitsAddList> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Gap(20),
-              Text(
-                'วันที่เอกสาร',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey.shade600),
-              ),
-              const Gap(10),
-              Container(
-                width: double.infinity,
-                child: GestureDetector(
-                  onTap: () async {
-                    selectedDate = await showRoundedDatePicker(
-                      fontFamily: 'kanit',
-                      initialDatePickerMode: DatePickerMode.day,
-                      theme: ThemeData(
-                        primaryColor: const Color.fromARGB(255, 252, 119, 119),
-                        // backgroundColor: Color.fromARGB(255, 252, 119, 119),
-                        hintColor: Colors.green[800],
-                      ),
-                      styleDatePicker: MaterialRoundedDatePickerStyle(
-                        textStyleButtonNegative: const TextStyle(
-                          color: Color.fromARGB(255, 252, 119, 119),
-                        ),
-                        textStyleButtonPositive: const TextStyle(
-                          color: Color.fromARGB(255, 252, 119, 119),
-                        ),
-                        textStyleDayOnCalendarSelected:
-                            const TextStyle(color: Colors.white),
-                        decorationDateSelected: const BoxDecoration(
-                            color: Color.fromARGB(255, 252, 119, 119),
-                            shape: BoxShape.circle),
-                        textStyleDayButton: const TextStyle(
-                            fontFamily: 'kanit',
-                            fontSize: 20,
-                            color: Colors.white),
-                        textStyleYearButton: const TextStyle(
-                          fontFamily: 'kanit',
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      height: 300,
-                      initialDate: (selectedDate != null) ? selectedDate : null,
-                      context: context,
-                      locale: const Locale("th", "TH"),
-                      era: EraMode.BUDDHIST_YEAR,
-                    );
-                    checkselectdate();
-                    // Update the state with the selected date
-                  },
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: TextFormField(
-                      style: const TextStyle(color: Colors.black),
-                      controller: selectDateController,
-                      readOnly: true, // Set to true to make it non-editable
-                      enabled: false, // Set to false to disable the input field
-                      decoration: CustomInputDecoration.getInputDecoration(
-                        suffixIcon: Icon(
-                          Icons.calendar_today,
-                          color: Colors.grey.withOpacity(0.6),
-                        ),
-                        labelText: selectDateController.text.isEmpty
-                            ? 'Select Date'
-                            : null,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a value';
-                        }
-                        return null; // Return null if the input is valid
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              // const Gap(20),
+              // Text(
+              //   'วันที่เอกสาร',
+              //   style: TextStyle(
+              //       fontSize: 14,
+              //       fontWeight: FontWeight.normal,
+              //       color: Colors.grey.shade600),
+              // ),
+              // const Gap(10),
+              // Container(
+              //   width: double.infinity,
+              //   child: GestureDetector(
+              //     onTap: () async {
+              //       selectedDate = await showRoundedDatePicker(
+              //         fontFamily: 'kanit',
+              //         initialDatePickerMode: DatePickerMode.day,
+              //         theme: ThemeData(
+              //           primaryColor: const Color.fromARGB(255, 252, 119, 119),
+              //           // backgroundColor: Color.fromARGB(255, 252, 119, 119),
+              //           hintColor: Colors.green[800],
+              //         ),
+              //         styleDatePicker: MaterialRoundedDatePickerStyle(
+              //           textStyleButtonNegative: const TextStyle(
+              //             color: Color.fromARGB(255, 252, 119, 119),
+              //           ),
+              //           textStyleButtonPositive: const TextStyle(
+              //             color: Color.fromARGB(255, 252, 119, 119),
+              //           ),
+              //           textStyleDayOnCalendarSelected:
+              //               const TextStyle(color: Colors.white),
+              //           decorationDateSelected: const BoxDecoration(
+              //               color: Color.fromARGB(255, 252, 119, 119),
+              //               shape: BoxShape.circle),
+              //           textStyleDayButton: const TextStyle(
+              //               fontFamily: 'kanit',
+              //               fontSize: 20,
+              //               color: Colors.white),
+              //           textStyleYearButton: const TextStyle(
+              //             fontFamily: 'kanit',
+              //             fontSize: 20,
+              //             color: Colors.white,
+              //           ),
+              //         ),
+              //         height: 300,
+              //         initialDate: (selectedDate != null) ? selectedDate : null,
+              //         context: context,
+              //         locale: const Locale("th", "TH"),
+              //         era: EraMode.BUDDHIST_YEAR,
+              //       );
+              //       // checkselectdate();
+              //       // Update the state with the selected date
+              //     },
+              //     child: AbsorbPointer(
+              //       absorbing: true,
+              //       child: TextFormField(
+              //         style: const TextStyle(color: Colors.black),
+              //         controller: selectDateController,
+              //         readOnly: true, // Set to true to make it non-editable
+              //         enabled: false, // Set to false to disable the input field
+              //         decoration: CustomInputDecoration.getInputDecoration(
+              //           suffixIcon: Icon(
+              //             Icons.calendar_today,
+              //             color: Colors.grey.withOpacity(0.6),
+              //           ),
+              //           labelText: selectDateController.text.isEmpty
+              //               ? 'Select Date'
+              //               : null,
+              //         ),
+              //         validator: (value) {
+              //           if (value == null || value.isEmpty) {
+              //             return 'Please enter a value';
+              //           }
+              //           return null; // Return null if the input is valid
+              //         },
+              //       ),
+              //     ),
+              //   ),
+              // ),
               const Gap(20),
               Text(
                 'รายละเอียด',
@@ -324,17 +327,14 @@ class _MedicalBefitsAddListState extends State<MedicalBefitsAddList> {
 }
 
 class WelfareData {
-  // int? idExpenseAllowanceItem;
   String? description;
   String? price;
 
   WelfareData({
-    // this.,
     required this.description,
     required this.price,
   });
 
-  // Convert ExpenseData to Map
   Map<String, dynamic> toJson() {
     return {
       'description': description,
@@ -350,6 +350,43 @@ class WelfareData {
   // Update listExpense with new data
   static void updateListExpense(
       List<WelfareData> expenseList, List<Map<String, dynamic>> listExpense) {
+    List<Map<String, dynamic>> jsonList = listToJson(expenseList);
+    listExpense.addAll(jsonList);
+  }
+}
+
+class WelfareDataDraft extends WelfareData {
+  int? idExpenseWelfareItem;
+  dynamic withdrawablePrice;
+  dynamic difference;
+  WelfareDataDraft({
+    required this.idExpenseWelfareItem,
+    required this.withdrawablePrice,
+    required this.difference,
+    required super.description,
+    required super.price,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'idExpenseWelfareItem': idExpenseWelfareItem,
+      'description': description,
+      'price': price,
+      'withdrawablePrice': withdrawablePrice,
+      'difference': difference,
+    };
+  }
+
+  // Convert List<ExpenseData> to List<Map<String, dynamic>>
+  static List<Map<String, dynamic>> listToJson(
+      List<WelfareDataDraft> expenseList) {
+    return expenseList.map((expense) => expense.toJson()).toList();
+  }
+
+  // Update listExpense with new data
+  static void updateListExpense(List<WelfareDataDraft> expenseList,
+      List<Map<String, dynamic>> listExpense) {
     List<Map<String, dynamic>> jsonList = listToJson(expenseList);
     listExpense.addAll(jsonList);
   }

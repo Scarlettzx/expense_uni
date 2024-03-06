@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:iconamoon/iconamoon.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:open_file/open_file.dart';
+import 'package:uni_expense/src/components/motion_toast.dart';
 
 class FilePickerComponent extends StatefulWidget {
   final void Function(PlatformFile?) onFileSelected;
@@ -124,7 +126,18 @@ class _FilePickerComponentState extends State<FilePickerComponent> {
     if (pickedFile.size > 500 * 1024) {
       // Handle file size exceeds 500 KB
       print("File size exceeds 500 KB");
-      return;
+      return CustomMotionToast.show(
+        context: context,
+        title: "File Error",
+        description: "File size exceeds 500 KB",
+        icon: Icons.notification_important,
+        primaryColor: Colors.pink,
+        width: 300,
+        height: 100,
+        animationType: AnimationType.fromLeft,
+        fontSizeTitle: 18.0,
+        fontSizeDescription: 15.0,
+      );
     }
 
     // Call the callback function with the selected file

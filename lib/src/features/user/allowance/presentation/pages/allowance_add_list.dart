@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:custom_date_range_picker/custom_date_range_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -12,11 +14,10 @@ import 'package:uni_expense/src/features/user/allowance/presentation/widgets/cus
 // import '../../../expense/presentation/widgets/calender_page.dart';
 
 class AllowanceAddList extends StatefulWidget {
+  final Map<dynamic, dynamic>? listexpense;
   final bool checkonclickdraft;
-  const AllowanceAddList({
-    super.key,
-    required this.checkonclickdraft,
-  });
+  const AllowanceAddList(
+      {super.key, required this.checkonclickdraft, this.listexpense});
 
   @override
   State<AllowanceAddList> createState() => _AllowanceAddListState();
@@ -26,19 +27,52 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
   final _formKey = GlobalKey<FormState>();
   DateTime? startDate;
   DateTime? endDate;
+
   // String? betweenDays;
   final startDateController = TextEditingController();
   final endDateController = TextEditingController();
   final descriptionController = TextEditingController();
   final betweenDays = TextEditingController();
+  var formatter = DateFormat('yyyy/MM/dd: HH:mm');
   void setdefault() {
-    var now = DateTime.now();
-    print(now);
-    var formatter = DateFormat('yyyy/MM/dd');
-    String formattedDate = formatter.format(now);
-    startDateController.text = formattedDate;
-    endDateController.text = formattedDate;
-    betweenDays.text = '1';
+    setState(() {
+      if (widget.listexpense != null && widget.listexpense!.isNotEmpty) {
+        if (widget.checkonclickdraft == false) {
+          startDateController.text = widget.listexpense!['startDate'];
+          endDateController.text = widget.listexpense!['endDate'];
+          descriptionController.text = widget.listexpense!['description'];
+          betweenDays.text = widget.listexpense!['countDays'].toString();
+          startDate = DateTime.tryParse(startDateController.text);
+          endDate = DateTime.tryParse(endDateController.text);
+        } else if (widget.checkonclickdraft == true) {
+          (widget.listexpense!['idExpenseAllowanceItem'] != null)
+              ? null
+              : widget.listexpense!['idExpenseAllowanceItem'] = null;
+          startDateController.text = widget.listexpense!['startDate'];
+          endDateController.text = widget.listexpense!['endDate'];
+          descriptionController.text = widget.listexpense!['description'];
+          betweenDays.text = widget.listexpense!['countDays'].toString();
+
+          startDate = DateTime.tryParse(startDateController.text);
+          endDate = DateTime.tryParse(endDateController.text);
+        }
+      } else {
+        var now = DateTime.now();
+        String formattedDate = formatter.format(now);
+        startDateController.text = formattedDate;
+        endDateController.text = formattedDate;
+        betweenDays.text = '1';
+      }
+    });
+  }
+
+  String formatThaiDate(String datetime) {
+    // แปลงวันที่จาก String เป็น DateTime
+    DateTime date = DateTime.parse(datetime);
+    var thaiDateFormat = DateFormat('d MMMM y', 'th_TH');
+    return thaiDateFormat
+        .format(date)
+        .replaceAll('${date.year}', '${date.year + 543}');
   }
 
   @override
@@ -50,31 +84,32 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
   }
 
   void addData() {
-    ExpenseData newExpenseData;
-
+    // ExpenseData newExpenseData;
     if (widget.checkonclickdraft == true) {
-      print('yes');
-      newExpenseData = ExpenseData(
+      // print("draft");
+      // print(widget.checkonclickdraft);
+      ExpenseDataDraft newExpenseData = ExpenseDataDraft(
         idExpenseAllowanceItem: null,
         startDate: startDateController.text,
         endDate: endDateController.text,
         description: descriptionController.text,
         countDays: double.parse(betweenDays.text),
       );
+      print(jsonEncode(newExpenseData.idExpenseAllowanceItem));
+      List<ExpenseDataDraft> updatedDataInitial = [newExpenseData];
+      Navigator.pop(context, updatedDataInitial);
     } else {
-      newExpenseData = ExpenseData(
+      // print("not draft");
+      // print(widget.checkonclickdraft);
+      ExpenseData newExpenseData = ExpenseData(
         startDate: startDateController.text,
         endDate: endDateController.text,
         description: descriptionController.text,
         countDays: double.parse(betweenDays.text),
-      );
+      ); // อัปเดต List ใน dataInitial โดยเพิ่มข้อมูลใหม่
+      List<ExpenseData> updatedDataInitial = [newExpenseData];
+      Navigator.pop(context, updatedDataInitial);
     }
-// อัปเดต List ใน dataInitial โดยเพิ่มข้อมูลใหม่
-    List<ExpenseData> updatedDataInitial = [
-      // ...widget.dataInitial,
-      newExpenseData
-    ];
-    Navigator.pop(context, updatedDataInitial);
   }
 
   int daysDifferenceBetween(DateTime from, DateTime to) {
@@ -157,7 +192,10 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
                       children: [
                         // SizedBox(width: 4),
                         // Gap(0.2),
-                        Text(startDateController.text),
+                        Text(formatThaiDate(startDateController.text
+                            .split(':')[0]
+                            .replaceAll('/', '-'))),
+
                         IconButton(
                           // alignment: Alignment.bottomLeft,
                           onPressed: () {
@@ -165,24 +203,26 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
                               context,
                               dismissible: true,
                               backgroundColor: Colors.white,
-                              minimumDate: startDate ??
-                                  DateTime
-                                      .now(), // ให้ minimumDate เป็น startDate ถ้ามีค่า, ไม่มีค่าก็ให้เป็น DateTime.now()
+                              minimumDate: DateTime.now(),
                               maximumDate:
                                   DateTime.now().add(const Duration(days: 365)),
                               endDate: endDate,
                               startDate: startDate,
+                              fontFamily: 'kanit',
                               onApplyClick: (start, end) {
                                 setState(() {
                                   endDate = end;
                                   startDate = start;
-                                  final currentDay =
-                                      DateTime.now(); // Current date
+                                  print(endDate);
+                                  print(startDate);
+                                  // final currentDay =
+                                  //     DateTime.now(); // Current date
                                   final differenceFormTwoDates =
                                       daysDifferenceBetween(start, end);
-                                  final differenceFormCurrent =
-                                      daysDifferenceBetween(start, end);
+                                  // final differenceFormCurrent =
+                                  //     daysDifferenceBetween(start, end);
                                   var daysGet = differenceFormTwoDates + 1;
+                                  print(daysGet);
                                   betweenDays.text = daysGet.toString();
                                   // var formatterStartdate =
                                   //     DateFormat.yMMMd('th');
@@ -202,7 +242,8 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
                                   endDateController.text = formattedendDate;
                                   // formattedEDate.toString();
                                 });
-                                print(betweenDays);
+                                print(startDateController.text);
+                                print(endDateController.text);
                               },
                               onCancelClick: () {
                                 // Navigator.pop
@@ -253,7 +294,9 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
                       children: [
                         // SizedBox(width: 4),
                         // Gap(0.2),
-                        Text(endDateController.text),
+                        Text(formatThaiDate(endDateController.text
+                            .split(':')[0]
+                            .replaceAll('/', '-'))),
                         IconButton(
                           // alignment: Alignment.bottomLeft,
                           onPressed: () {
@@ -452,14 +495,14 @@ class _AllowanceAddListState extends State<AllowanceAddList> {
 }
 
 class ExpenseData {
-  int? idExpenseAllowanceItem;
+  // int? idExpenseAllowanceItem;
   String? startDate;
   String? endDate;
   String? description;
   num? countDays;
 
   ExpenseData({
-    this.idExpenseAllowanceItem,
+    // this.idExpenseAllowanceItem,
     required this.startDate,
     required this.endDate,
     required this.description,
@@ -469,7 +512,7 @@ class ExpenseData {
   // Convert ExpenseData to Map
   Map<String, dynamic> toJson() {
     return {
-      'idExpenseAllowanceItem': idExpenseAllowanceItem,
+      // 'idExpenseAllowanceItem': idExpenseAllowanceItem,
       'startDate': startDate,
       'endDate': endDate,
       'description': description,
@@ -485,6 +528,40 @@ class ExpenseData {
   // Update listExpense with new data
   static void updateListExpense(
       List<ExpenseData> expenseList, List<Map<String, dynamic>> listExpense) {
+    List<Map<String, dynamic>> jsonList = listToJson(expenseList);
+    listExpense.addAll(jsonList);
+  }
+}
+
+class ExpenseDataDraft extends ExpenseData {
+  int? idExpenseAllowanceItem;
+  ExpenseDataDraft({
+    required this.idExpenseAllowanceItem,
+    required super.startDate,
+    required super.endDate,
+    required super.description,
+    required super.countDays,
+  });
+  // Convert ExpenseData to Map
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'idExpenseAllowanceItem': idExpenseAllowanceItem,
+      'startDate': startDate,
+      'endDate': endDate,
+      'description': description,
+      'countDays': countDays,
+    };
+  }
+
+  static List<Map<String, dynamic>> listToJson(
+      List<ExpenseDataDraft> expenseList) {
+    return expenseList.map((expense) => expense.toJson()).toList();
+  }
+
+  // Update listExpense with new data
+  static void updateListExpense(List<ExpenseDataDraft> expenseList,
+      List<Map<String, dynamic>> listExpense) {
     List<Map<String, dynamic>> jsonList = listToJson(expenseList);
     listExpense.addAll(jsonList);
   }

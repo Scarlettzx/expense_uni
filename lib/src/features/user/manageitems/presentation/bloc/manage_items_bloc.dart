@@ -11,7 +11,7 @@ part 'manage_items_state.dart';
 
 class ManageItemsBloc extends Bloc<ManageItemsEvent, ManageItemsState> {
   final GetManageItems getmanageitems;
-  late ManageItems manageitemsData;
+  // late ManageItems manageitemsData;
   ManageItemsBloc({required this.getmanageitems})
       : super(ManageItemsInitial()) {
     on<GetManageItemsDataEvent>((event, emit) async {
@@ -19,11 +19,14 @@ class ManageItemsBloc extends Bloc<ManageItemsEvent, ManageItemsState> {
       var resManageitems = await getmanageitems();
       resManageitems.fold(
         (l) => emit(ManageItemsFailure(error: l)),
-        (r) => manageitemsData = r,
+        (r) {
+          print(r);
+          emit(ManageItemsFinish(manageItems: r));
+        },
       );
       // print(manageitemsData);
       // print(manageitemsData.all);
-      emit(ManageItemsFinish(manageItems: manageitemsData));
+      // emit(ManageItemsFinish(manageItems: manageitemsData));
     });
   }
 }

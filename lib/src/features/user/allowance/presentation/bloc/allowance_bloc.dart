@@ -21,7 +21,7 @@ class AllowanceBloc extends Bloc<AllowanceEvent, AllowanceState> {
   final DeleteAllowance deleteExpensallowancedata;
   final EditAllowance updateAllowancedata;
   List<EmployeesAllRolesEntity> empallrolesData = [];
-  // late ResponseAllowanceEntity listaddexpenseallowancedata;
+  GetExpenseAllowanceByIdEntity? expenseallowancedata;
   AllowanceBloc({
     required this.deleteExpensallowancedata,
     required this.getEmployeeAllrolesdata,
@@ -71,11 +71,12 @@ class AllowanceBloc extends Bloc<AllowanceEvent, AllowanceState> {
                 ),
               ), (r) {
         print("GetExpenseAllowanceByIdData $r");
-        emit(AllowanceFinish(
-          empsallrole: empallrolesData,
-          expenseallowancebyid: r,
-        ));
+        expenseallowancedata = r;
       });
+      emit(AllowanceFinish(
+        empsallrole: empallrolesData,
+        expenseallowancebyid: expenseallowancedata,
+      ));
     });
     on<DeleteExpenseAllowanceEvent>((event, emit) async {
       emit(AllowanceLoading());
@@ -108,7 +109,7 @@ class AllowanceBloc extends Bloc<AllowanceEvent, AllowanceState> {
           debugPrint('edit');
           emit(
             AllowanceFinish(
-              // expenseallowancebyid: ,
+              // expenseallowancebyid: expenseallowancedata,
               empsallrole: empallrolesData,
               responseeditallowance: r,
             ),

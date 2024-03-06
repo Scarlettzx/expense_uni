@@ -7,6 +7,7 @@ class CustomInputDecoration {
   static InputDecoration getInputDecoration({
     Widget? suffixIcon,
     String? labelText,
+    // bool? readOnly,
   }) {
     return InputDecoration(
       // fillColor: const Color.fromARGB(255, 237, 237, 237).withOpacity(0.5),

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../../components/custominputdecoration.dart';
 
 class CustomDatePicker extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   const CustomDatePicker({super.key, required this.controller});
 
@@ -24,14 +24,29 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   }
 
   void setDefaultDate() {
-    var now = DateTime.now();
-    String formattedDate = thaiDateFormat
-        .format(now)
-        .replaceAll('${now.year}', '${now.year + 543}');
-    selectDateController.text = formattedDate;
-    var formatter = DateFormat('yyyy/MM/dd');
-    widget.controller.text = formatter.format(now);
+    if (widget.controller!.text.isNotEmpty) {
+      DateTime inputDate =
+          DateFormat("yyyy/MM/dd").parse(widget.controller!.text);
+      String formattedDate = thaiDateFormat
+          .format(inputDate)
+          .replaceAll('${inputDate.year}', '${inputDate.year + 543}');
+      selectDateController.text = formattedDate;
+      selectedDate = inputDate;
+    } else {
+      var now = DateTime.now();
+      String formattedDate = thaiDateFormat
+          .format(now)
+          .replaceAll('${now.year}', '${now.year + 543}');
+      selectDateController.text = formattedDate;
+      var formatter = DateFormat('yyyy/MM/dd');
+      widget.controller!.text = formatter.format(now);
+    }
   }
+
+  // void setDefaultDated() {
+
+  //   // var formatter = DateFormat('yyyy/MM/dd');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +126,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
         // var thaiLocale = const Locale('th', 'TH');
         var formatter = DateFormat('yyyy/MM/dd');
-        widget.controller.text = formatter.format(selectedDate!);
+        widget.controller!.text = formatter.format(selectedDate!);
 
-        print('data ${widget.controller.text}');
+        print('data ${widget.controller!.text}');
         var formattedDate = thaiDateFormat
             .format(selectedDate!)
             .replaceAll('${selectedDate!.year}', '${selectedDate!.year + 543}');

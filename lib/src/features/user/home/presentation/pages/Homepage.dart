@@ -314,7 +314,7 @@ class _HomepageState extends State<Homepage> {
                             PageTransition(
                                 duration: Durations.medium1,
                                 type: PageTransitionType.rightToLeft,
-                                child: const FareGeneralInformation()),
+                                child: FareGeneralInformation()),
                             // MaterialPageRoute(
                             //     builder: (context) => const Expense()),
                           );

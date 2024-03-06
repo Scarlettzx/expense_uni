@@ -48,8 +48,8 @@ class ManageItemsModel extends ManageItems {
         waitingForAdmin: List<AllModel>.from(
             json["WaitingForAdmin"].map((x) => AllModel.fromJson(x))),
         all: List<AllModel>.from(json["All"].map((x) => AllModel.fromJson(x))),
-        waitingForReview:
-            List<AllModel>.from(json["WaitingForReview"].map((x) => x)),
+        waitingForReview: List<AllModel>.from(
+            json["WaitingForReview"].map((x) => AllModel.fromJson(x))),
       );
 
   // Map<String, dynamic> toJson() => {

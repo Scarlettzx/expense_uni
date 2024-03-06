@@ -13,7 +13,7 @@ void main() async {
   await di.init();
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-      .then((value) => runApp(Injection(router: const MyApp())));
+      .then((value) => runApp(const Injection(router: MyApp())));
 }
 
 class MyApp extends StatelessWidget {

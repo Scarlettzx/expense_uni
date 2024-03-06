@@ -14,6 +14,7 @@ class FareAddListCostFuel extends StatefulWidget {
 }
 
 class _FareAddListConstFuelState extends State<FareAddListCostFuel> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,7 +187,7 @@ class _FareAddListConstFuelState extends State<FareAddListCostFuel> {
                   Navigator.push(
                       context,
                       PageTransition(
-                          child: const FareGeneralInformation(),
+                          child: FareGeneralInformation(),
                           type: PageTransitionType.topToBottom));
                 },
               ),

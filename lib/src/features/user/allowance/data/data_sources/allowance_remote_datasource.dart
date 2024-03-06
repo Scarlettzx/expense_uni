@@ -78,7 +78,7 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
       request.fields['idPosition'] = formData.idPosition!.toString();
 
       // Convert ccEmail list to JSON and add it as a field
-      request.fields['cc_email'] = convertEmailsToJson(formData.ccEmail!);
+      request.fields['cc_email'] = jsonEncode(formData.ccEmail!);
 
       // Add the file (if any) to the request
       if (formData.file != null) {
@@ -128,11 +128,11 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
     }
   }
 
-// Convert a list of emails to a JSON string
-  String convertEmailsToJson(List<dynamic> emails) {
-    print(jsonEncode(emails.join(';')));
-    return emails.isNotEmpty ? jsonEncode(emails.join(';')) : "";
-  }
+// // Convert a list of emails to a JSON string
+//   String convertEmailsToJson(List<dynamic> emails) {
+//     print(jsonEncode(emails.join(';')));
+//     return emails.isNotEmpty ? jsonEncode(emails.join(';')) : "";
+//   }
 
   @override
   Future<GetExpenseAllowanceByIdModel> getExpenseAllowanceById(
