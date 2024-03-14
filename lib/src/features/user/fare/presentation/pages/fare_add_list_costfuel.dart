@@ -14,7 +14,6 @@ class FareAddListCostFuel extends StatefulWidget {
 }
 
 class _FareAddListConstFuelState extends State<FareAddListCostFuel> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,10 +174,6 @@ class _FareAddListConstFuelState extends State<FareAddListCostFuel> {
                     color: Colors.white, // สีข้อความขาว
                   ),
                 ),
-                // icon: Icon(
-                //   Icons.send,
-                //   color: Colors.white,
-                // ),
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xffff99ca), // สีปุ่มสีส้ม
                 ),

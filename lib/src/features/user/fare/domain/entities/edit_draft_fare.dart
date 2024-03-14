@@ -7,8 +7,8 @@ class EditDraftFareEntity extends Equatable {
   final String? documentId;
   final String? nameExpense;
   final List<ListExpenseEditFareEntity>? listExpense;
-  final PlatformFile? file;
   final String? remark;
+  final PlatformFile? file;
   final int? typeExpense;
   final String? typeExpenseName;
   final String? lastUpdateDate;
@@ -27,8 +27,8 @@ class EditDraftFareEntity extends Equatable {
     required this.documentId,
     required this.nameExpense,
     required this.listExpense,
-    required this.file,
     required this.remark,
+    required this.file,
     required this.typeExpense,
     required this.typeExpenseName,
     required this.lastUpdateDate,
@@ -49,8 +49,8 @@ class EditDraftFareEntity extends Equatable {
         documentId,
         nameExpense,
         listExpense,
-        file,
         remark,
+        file,
         typeExpense,
         typeExpenseName,
         lastUpdateDate,

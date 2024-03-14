@@ -18,4 +18,5 @@ class EmployeeRoleAdminEntity extends Equatable {
         email,
         idEmployees,
       ];
+
 }

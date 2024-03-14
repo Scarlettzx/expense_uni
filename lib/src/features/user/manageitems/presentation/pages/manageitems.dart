@@ -71,63 +71,69 @@ class _ManageItemsState extends State<ManageItems>
         child: Scaffold(
             appBar: const CustomAppBar(
                 image: "appbar_manageitems.png", title: 'จัดการรายการ'),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(30.0),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            duration: Durations.medium1,
-                            type: PageTransitionType.rightToLeft,
-                            child: const ManageItemsAddList(),
+            body: Container(
+              // color: Colors.amber,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(30.0),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              duration: Durations.medium1,
+                              type: PageTransitionType.rightToLeft,
+                              child: const ManageItemsAddList(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffff99ca),
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xffff99ca),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).devicePixelRatio * 6,
-                            vertical:
-                                MediaQuery.of(context).devicePixelRatio * 3),
-                        child: Text(
-                          '+ เพิ่มรายการ',
-                          style: TextStyle(color: Colors.white),
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).devicePixelRatio * 6,
+                              vertical:
+                                  MediaQuery.of(context).devicePixelRatio * 3),
+                          child: Text(
+                            '+ เพิ่มรายการ',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                ManageItemsTabBar(
-                  itemCounts: [
-                    allItemsCount,
-                    draftItemsCount,
-                    waitingItemsCount,
-                    waitingforadminItemsCount,
-                    waitingforreviewItemsCount,
-                    processingItemsCount,
-                    holdingItemsCount,
-                    completedItemsCount,
-                    rejectedItemsCount,
-                  ],
-                  tabController: tabController,
-                ),
-                BlocBuilder<ManageItemsBloc, ManageItemsState>(
-                  builder: (context, state) {
-                    return ManageItemsTabView(
-                        manageItemsState: state, tabcontroller: tabController);
-                  },
-                ),
-              ],
+                  ManageItemsTabBar(
+                    itemCounts: [
+                      allItemsCount,
+                      draftItemsCount,
+                      waitingItemsCount,
+                      waitingforadminItemsCount,
+                      waitingforreviewItemsCount,
+                      processingItemsCount,
+                      holdingItemsCount,
+                      completedItemsCount,
+                      rejectedItemsCount,
+                    ],
+                    tabController: tabController,
+                  ),
+                  BlocBuilder<ManageItemsBloc, ManageItemsState>(
+                    builder: (context, state) {
+                      return ManageItemsTabView(
+                        manageItemsBloc: manageItemsBloc,
+                        manageItemsState: state,
+                        tabcontroller: tabController,
+                      );
+                    },
+                  ),
+                ],
+              ),
             )),
       ),
     );

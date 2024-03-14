@@ -134,7 +134,7 @@ class ListExpensegetallowancebyidModel
       );
 }
 
-class FileUrlModel extends FileUrl {
+class FileUrlModel extends FileUrlGetAllowanceByIdEntity {
   const FileUrlModel({
     required String? url,
     required String? path,

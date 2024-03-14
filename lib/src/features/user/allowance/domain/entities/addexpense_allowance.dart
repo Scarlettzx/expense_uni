@@ -9,11 +9,11 @@ class AddExpenseAllowanceEntity extends Equatable {
   final String? remark;
   final int? typeExpense;
   final String? typeExpenseName;
-  final DateTime? lastUpdateDate;
+  final String? lastUpdateDate;
   final int? status;
   final int? sumAllowance;
   final int? sumSurplus;
-  final int? sumDays;
+  final num? sumDays;
   final int? sumNet;
   final int? idEmpApprover;
   final String? ccEmail;

@@ -19,7 +19,7 @@ class GetExpenseAllowanceByIdEntity extends Equatable {
   final List<dynamic>? actions;
   final int? idEmpApprover;
   final String? approverName;
-  final FileUrl? fileUrl;
+  final FileUrlGetAllowanceByIdEntity? fileUrl;
 
   const GetExpenseAllowanceByIdEntity({
     required this.documentId,
@@ -97,11 +97,11 @@ class ListExpensegetallowancebyidEntity extends Equatable {
       };
 }
 
-class FileUrl extends Equatable {
+class FileUrlGetAllowanceByIdEntity extends Equatable {
   final String? url;
   final String? path;
 
-  const FileUrl({
+  const FileUrlGetAllowanceByIdEntity({
     required this.url,
     required this.path,
   });

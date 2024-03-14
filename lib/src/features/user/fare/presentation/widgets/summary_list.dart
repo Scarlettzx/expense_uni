@@ -29,7 +29,8 @@ class _SummaryListState extends State<SummaryList> {
       builder: (context, state) {
         // print('show summary');
         // print(state);
-        if (state.status == FetchStatus.finish) {
+        if (state.status == FetchStatus.finish ||
+            state.status == FetchStatus.list) {
           int total = state.listlocationandfuel.isNotEmpty
               ? state.listlocationandfuel
                   .map((item) => item.total)

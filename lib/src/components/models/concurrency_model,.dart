@@ -42,6 +42,24 @@ class ConcurrencyModel {
   int get hashCode => code.hashCode;
 }
 
-List<ConcurrencyModel> loadConcurrencyData(String jsonString) {
+List<ConcurrencyModel>? loadConcurrencyData(String jsonString) {
   return concurrencyModelFromJson(jsonString);
 }
+
+// int? findCurrencyIndex(String? targetUnit, List<ConcurrencyModel>? currencies) {
+//   if (targetUnit == null || currencies == null) return null;
+
+//   for (int i = 0; i < currencies.length; i++) {
+//     if (currencies[i].unit == targetUnit) {
+//       return i;
+//     }
+//   }
+
+//   return null;
+// }
+
+// String? findMatchingUnitIndex(String? targetCurrency, String jsonString) {
+//   List<ConcurrencyModel>? currencies = loadConcurrencyData(jsonString);
+//   int? matchingIndex = findCurrencyIndex(targetCurrency, currencies);
+//   return matchingIndex != null ? currencies![matchingIndex].unit : null;
+// }

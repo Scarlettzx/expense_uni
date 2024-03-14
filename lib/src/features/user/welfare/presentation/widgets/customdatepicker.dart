@@ -23,6 +23,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     setDefaultDate();
   }
 
+  void setDefaultDateFunction() {
+    setDefaultDate();
+  }
+
   void setDefaultDate() {
     if (widget.controller!.text.isNotEmpty) {
       DateTime inputDate =

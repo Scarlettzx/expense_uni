@@ -51,12 +51,24 @@ Future<void> init() async {
   sl.registerFactory(() => ExpenseGoodBloc(
         getEmployeesAllrolesdata: sl(),
         getEmployeesRoleadmin: sl(),
+        addexpensegooddata: sl(),
+        getexpensebyiddata: sl(),
+        editexpensegooddata: sl(),
+        dodeletedata: sl(),
       ));
   // * Usecase
   sl.registerLazySingleton(
       () => usecases_expense.GetEmployeesAllRoles(repository: sl()));
   sl.registerLazySingleton(
       () => usecases_expense.GetEmployeesRoleAdmin(repository: sl()));
+  sl.registerLazySingleton(
+      () => usecases_expense.AddExpenseGood(repository: sl()));
+  sl.registerLazySingleton(
+      () => usecases_expense.GetExpenseById(repository: sl()));
+  sl.registerLazySingleton(
+      () => usecases_expense.EditExpenseGood(repository: sl()));
+  sl.registerLazySingleton(
+      () => usecases_expense.DeleteExpenseGood(repository: sl()));
   // * Repository
   sl.registerLazySingleton<ExpenseGoodRepository>(
       () => ExpenseGoodRepositoryImpl(remoteDatasource: sl()));
@@ -162,6 +174,7 @@ Future<void> init() async {
         getEmployeesAllrolesdata: sl(),
         getfarebyiddata: sl(),
         editfaredata: sl(),
+        deletefaredata: sl(),
       ));
   // * Usecase
   sl.registerLazySingleton(() => GetEmployeesAllRolesFare(
@@ -174,6 +187,9 @@ Future<void> init() async {
         repository: sl(),
       ));
   sl.registerLazySingleton(() => EditFare(
+        repository: sl(),
+      ));
+  sl.registerLazySingleton(() => DeleteFare(
         repository: sl(),
       ));
   // * Repository

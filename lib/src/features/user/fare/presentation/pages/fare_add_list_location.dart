@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 // import 'package:iconamoon/iconamoon.dart';
 import 'package:uni_expense/src/features/user/allowance/presentation/widgets/customappbar.dart';
 import 'package:uni_expense/src/features/user/fare/presentation/bloc/fare_bloc.dart';
-
+// import 'setDefaultDateFunction';
 // import '../../../../../components/custominputdecoration.dart';
 import '../../../welfare/presentation/widgets/customdatepicker.dart';
 import '../../data/models/addlist_location_fuel.dart';
@@ -76,9 +76,18 @@ class _FareAddListLocationState extends State<FareAddListLocation> {
       print('Invalid input');
     }
   }
-// void calculateTotal() {
 
-// }
+  void handleCleardata() {
+    // _selectDateController.clear();
+    _startLocationController.clear();
+    _stopLocationController.clear();
+    _startMileController.clear();
+    _stopMileController.clear();
+    _totalController.clear();
+    _personalController.clear();
+    _netController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.isdraft);
@@ -229,7 +238,9 @@ class _FareAddListLocationState extends State<FareAddListLocation> {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      handleCleardata();
+                    },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(
                           width: 2, color: Color(0xffff99ca)), // สีขอบสีส้ม
@@ -309,13 +320,6 @@ class _FareAddListLocationState extends State<FareAddListLocation> {
                         debugPrint("not success");
                       }
                     },
-                    // Navigator.push(
-                    //     context,
-                    //     PageTransition(
-                    //         child: FareGeneralInformation(),
-                    //         type: PageTransitionType.topToBottom));
-
-                    // },
                   ),
                 ),
                 const Gap(20),

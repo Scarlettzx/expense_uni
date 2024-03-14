@@ -5,7 +5,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:uni_expense/src/features/user/fare/presentation/bloc/fare_bloc.dart';
 
 // import '../../data/models/addlist_location_fuel.dart';
-import '../../data/models/addlist_location_fuel.dart';
+// import '../../data/models/addlist_location_fuel.dart';
 import '../pages/fare_add_list_location.dart';
 import 'listlocation_fuel.dart';
 
@@ -77,7 +77,6 @@ class _LocationFuelWidgetState extends State<LocationFuelWidget> {
             // print(state);
             final listlocationfuel = state.listlocationandfuel;
             if (state.listlocationandfuel.isNotEmpty) {
-              // print(listlocationfuel);
               return ListLocationAndFuel(
                 listlocationandfuel: listlocationfuel,
                 fareBloc: widget.fareBloc,

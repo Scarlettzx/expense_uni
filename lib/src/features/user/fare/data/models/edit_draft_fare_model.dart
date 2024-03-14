@@ -36,8 +36,8 @@ class EditDraftFareModel extends EditDraftFareEntity {
           documentId: documentId,
           nameExpense: nameExpense,
           listExpense: listExpense,
-          file: file,
           remark: remark,
+          file: file,
           typeExpense: typeExpense,
           typeExpenseName: typeExpenseName,
           lastUpdateDate: lastUpdateDate,
@@ -61,8 +61,8 @@ class EditDraftFareModel extends EditDraftFareEntity {
             ? []
             : List<ListExpenseEditFareModel>.from(json["listExpense"]!
                 .map((x) => ListExpenseEditFareModel.fromJson(x))),
-        file: json["file"],
         remark: json["remark"],
+        file: json["file"],
         typeExpense: json["typeExpense"],
         typeExpenseName: json["typeExpenseName"],
         lastUpdateDate: json["lastUpdateDate"],
@@ -86,8 +86,8 @@ class EditDraftFareModel extends EditDraftFareEntity {
         "listExpense": listExpense == null
             ? []
             : List<dynamic>.from(listExpense!.map((x) => x.toJson())),
-        "file": file,
         "remark": remark,
+        "file": file,
         "typeExpense": typeExpense,
         "typeExpenseName": typeExpenseName,
         "lastUpdateDate": lastUpdateDate,

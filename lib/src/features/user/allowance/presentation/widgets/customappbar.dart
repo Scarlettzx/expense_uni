@@ -44,9 +44,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-
-      // ),
-
       leadingWidth: 100, // default is 56
       automaticallyImplyLeading: false,
       flexibleSpace: Stack(
@@ -66,66 +63,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ))
         ],
-
-        // background:
-        // title: Text('mds'),
       ),
-      // foregroundColor: Colors.amber,
-      // forceMaterialTransparency: false,
       excludeHeaderSemantics: false,
       toolbarHeight: height,
-      // bottom: tabs != null
-      //     ? PreferredSize(
-      //         preferredSize: Size.fromHeight(
-      //             height), // Provide the height of the AppBar here
-      //         child:
-      //             // padding: const EdgeInsets.all(30.0),
-      //             Column(
-      //           children: [
-      //             Align(
-      //               alignment: Alignment.bottomRight,
-      //               child: InkWell(
-      //                 borderRadius: BorderRadius.circular(30.0),
-      //                 onTap: () {
-      //                   // Navigator.push(
-      //                   //   context,
-      //                   //   PageTransition(
-      //                   //     duration: Durations.medium1,
-      //                   //     type: PageTransitionType.rightToLeft,
-      //                   //     child: const MedicalBefitsAddList(),
-      //                   //   ),
-      //                   // );
-      //                 },
-      //                 child: Container(
-      //                   // color: Colors.amber,
-      //                   decoration: BoxDecoration(
-      //                     color: Color(0xffff99ca),
-      //                     borderRadius: BorderRadius.circular(30.0),
-      //                   ),
-      //                   padding: EdgeInsets.symmetric(
-      //                       horizontal:
-      //                           MediaQuery.of(context).devicePixelRatio * 6,
-      //                       vertical:
-      //                           MediaQuery.of(context).devicePixelRatio * 3),
-      //                   // shape: Border.all(width: 2),
-      //                   // onPressed: () => {},
-      //                   // fillColor: ,
-      //                   child: Text(
-      //                     '+ เพิ่มรายการ',
-      //                     style: TextStyle(color: Colors.white),
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //             TabBar(
-      //               tabs: tabs!,
-      //               isScrollable: true,
-      //             ),
-      //           ],
-      //           // ),
-      //         ),
-      //       )
-      //     : null,
     );
   }
 

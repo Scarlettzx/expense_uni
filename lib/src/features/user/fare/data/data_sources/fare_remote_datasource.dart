@@ -9,9 +9,11 @@ import '../../../../../core/constant/network_api.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/storage/secure_storage.dart';
 import '../models/add_fare_model.dart';
+import '../models/delete_fare_model.dart';
 import '../models/edit_draft_fare_model.dart';
 import '../models/employeesallroles_model.dart';
 import '../models/getfarebyid_model.dart';
+import '../models/response_dodelete_fare_model.dart';
 import '../models/response_fare_model.dart';
 
 abstract class FareRemoteDatasource {
@@ -21,6 +23,8 @@ abstract class FareRemoteDatasource {
   Future<GetFareByIdModel> getFareById(int idExpense);
   Future<ResponseEditDraftFareModel> updateFare(
       int idEmployees, EditDraftFareModel data);
+  Future<ResponseDoDeleteFareModel> deleteFare(
+      int idEmp, DeleteDraftFareModel data);
 }
 
 class FareRemoteDatasourceImpl implements FareRemoteDatasource {
@@ -63,7 +67,7 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
       request.fields['personalDistance'] =
           formData.personalDistance!.toString();
       request.fields['netDistance'] = formData.netDistance!.toString();
-      request.fields['netDistance'] = formData.netDistance!.toString();
+      // request.fields['netDistance'] = formData.netDistance!.toString();
       request.fields['net'] = formData.net!.toString();
       request.fields['idEmpApprover'] = formData.idEmpApprover!.toString();
       request.fields['idPosition'] = formData.idPosition!.toString();
@@ -118,8 +122,9 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
       headers: {'x-access-token': '${await LoginStorage.readToken()}'},
     );
     if (response.statusCode == 200) {
+      print('getFareById');
       print(response.body);
-      print('asasdasdas');
+      // print('asasdasdas');
       return getFareByIdModelFromJson(response.body);
     } else {
       throw ServerException(message: "Server error occurred");
@@ -136,10 +141,10 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
     try {
       var request = http.MultipartRequest('PUT', url);
 
-      request.fields['nameExpense'] = data.nameExpense!;
       request.fields['idExpense'] = data.idExpense.toString();
       request.fields['idExpenseMileage'] = data.idExpenseMileage.toString();
       request.fields['documentId'] = data.documentId!;
+      request.fields['nameExpense'] = data.nameExpense!;
       request.fields['listExpense'] = jsonEncode(data.listExpense!);
       request.fields['remark'] = data.remark!;
       request.fields['typeExpense'] = data.typeExpense!.toString();
@@ -150,9 +155,9 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
       request.fields['personalDistance'] = data.personalDistance!.toString();
       request.fields['netDistance'] = data.netDistance!.toString();
       request.fields['net'] = data.net!.toString();
-      request.fields['comment'] = data.comment!.toString();
-      request.fields['deletedItem'] = data.deletedItem!.toString();
-      request.fields['idEmpApprover'] = data.idEmpApprover!.toString();
+      request.fields['comment'] = jsonEncode(data.comment);
+      request.fields['deletedItem'] = jsonEncode(data.deletedItem);
+      request.fields['idEmpApprover'] = data.idEmpApprover.toString();
       if (data.file != null) {
         var file = File(data.file!.path!);
         var fileBytes = await file.readAsBytes();
@@ -176,17 +181,18 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
       });
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
-      print('after: ${request.fields}');
-      print('after: ${request.files}');
-      print('after: ${request.headers}');
-      print('after: ${request.method}');
+      // print('after: ${request.fields}');
+      // print('after: ${request.files}');
+      // print('after: ${request.headers}');
+      // print('after: ${request.method}');
       print(response.statusCode);
       if (response.statusCode == 200) {
+        print('update');
         print(response.body);
-        print(response.statusCode);
-        print(response.request);
-        print(response.headers);
-        print(response.reasonPhrase);
+        // print(response.statusCode);
+        // print(response.request);
+        // print(response.headers);
+        // print(response.reasonPhrase);
         return responseEditDraftFareModelFromJson(response.body);
       } else {
         throw ServerException(message: "Server error occurred");
@@ -195,6 +201,36 @@ class FareRemoteDatasourceImpl implements FareRemoteDatasource {
       // Handle errors
       print('An error occurred: ${e.toString()}');
       rethrow;
+    }
+  }
+
+  @override
+  Future<ResponseDoDeleteFareModel> deleteFare(
+      int idEmp, DeleteDraftFareModel data) async {
+    final response = await client.put(
+        Uri.parse(
+          "${NetworkAPI.baseURL}/api/expense/mileage/$idEmp/delete",
+        ),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          "x-access-token": "${await LoginStorage.readToken()}"
+        },
+        body: jsonEncode({
+          "filePath": data.filePath,
+          "idExpense": data.idExpense,
+          "idExpenseMileage": data.idExpenseMileage,
+          "isAttachFile": data.isAttachFile,
+          "listExpense": data.listExpense
+        }));
+    if (response.statusCode == 200) {
+      print(response.body);
+      print(response.statusCode);
+      print(response.request);
+      print(response.headers);
+      print(response.reasonPhrase);
+      return responseDoDeleteFareModelFromJson(response.body);
+    } else {
+      throw ServerException(message: "Server error occurred");
     }
   }
 }

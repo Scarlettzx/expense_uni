@@ -254,7 +254,7 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             PageTransition(
-                                duration: Durations.extralong1,
+                                duration: Durations.medium1,
                                 type: PageTransitionType.rightToLeft,
                                 child: Expense()),
                             // MaterialPageRoute(
@@ -464,6 +464,7 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             PageTransition(
+                              duration: Durations.medium1,
                               child: FamilyRightsHome(),
                               type: PageTransitionType.rightToLeft,
                             ),

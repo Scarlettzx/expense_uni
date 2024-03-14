@@ -51,24 +51,19 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
     int idCompany,
     AddExpenseAllowanceModel formData,
   ) async {
-    // Construct the API endpoint URL
     final Uri url =
         Uri.parse('${NetworkAPI.baseURL}/api/expense/allowance/$idCompany');
     print(jsonEncode(formData.listExpense));
     try {
-      // Create a multipart/form-data request
       var request = http.MultipartRequest('POST', url);
       print('before: ${request.toString()}');
-      // Add fields to the request
-      // These are the parameters that will be sent as part of the request
       request.fields['nameExpense'] = formData.nameExpense!;
       request.fields['isInternational'] = formData.isInternational!.toString();
       request.fields['listExpense'] = jsonEncode(formData.listExpense);
       request.fields['remark'] = formData.remark!;
       request.fields['typeExpense'] = formData.typeExpense!.toString();
       request.fields['typeExpenseName'] = formData.typeExpenseName!;
-      request.fields['lastUpdateDate'] =
-          DateFormat("yyyy/MM/dd HH:mm").format(formData.lastUpdateDate!);
+      request.fields['lastUpdateDate'] =formData.lastUpdateDate!;
       request.fields['status'] = formData.status!.toString();
       request.fields['sumAllowance'] = formData.sumAllowance!.toString();
       request.fields['sumSurplus'] = formData.sumSurplus!.toString();
@@ -76,9 +71,7 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
       request.fields['sumDays'] = formData.sumDays!.toString();
       request.fields['idEmpApprover'] = formData.idEmpApprover!.toString();
       request.fields['idPosition'] = formData.idPosition!.toString();
-
-      // Convert ccEmail list to JSON and add it as a field
-      request.fields['cc_email'] = jsonEncode(formData.ccEmail!);
+      request.fields['cc_email'] = jsonEncode(formData.ccEmail);
 
       // Add the file (if any) to the request
       if (formData.file != null) {
@@ -127,12 +120,6 @@ class AllowanceRemoteDatasourceImpl implements AllowanceRemoteDatasource {
       rethrow; // Re-throw the exception
     }
   }
-
-// // Convert a list of emails to a JSON string
-//   String convertEmailsToJson(List<dynamic> emails) {
-//     print(jsonEncode(emails.join(';')));
-//     return emails.isNotEmpty ? jsonEncode(emails.join(';')) : "";
-//   }
 
   @override
   Future<GetExpenseAllowanceByIdModel> getExpenseAllowanceById(

@@ -11,16 +11,16 @@ class GetEmployeesAllRolesDataEvent extends AllowanceEvent {
 }
 
 class AddExpenseAllowanceEvent extends AllowanceEvent {
-  final int idCompany;
+  final int idEmployees;
   final AddExpenseAllowanceModel addallowancedata;
   const AddExpenseAllowanceEvent({
+    required this.idEmployees,
     required this.addallowancedata,
-    required this.idCompany,
   }); // Fix the constructor name here
 
   @override
   List<Object?> get props => [
-        idCompany,
+        idEmployees,
         addallowancedata,
       ];
 }
@@ -63,4 +63,54 @@ class UpdateExpenseAllowanceEvent extends AllowanceEvent {
         idEmp,
         editallowancedata,
       ];
+}
+
+class CalculateSumEvent extends AllowanceEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class ToggleIsInternationEvent extends AllowanceEvent {
+  final int? index;
+
+  const ToggleIsInternationEvent({required this.index});
+
+  @override
+  List<Object?> get props => [
+        index,
+      ];
+}
+
+class AddListAllowanceEvent extends AllowanceEvent {
+  final ListAllowance listallowance;
+
+  const AddListAllowanceEvent({required this.listallowance});
+
+  @override
+  List<Object?> get props => [
+        listallowance,
+      ];
+}
+
+class UpdateListAllowanceEvent extends AllowanceEvent {
+  final ListAllowance listallowance;
+
+  const UpdateListAllowanceEvent({required this.listallowance});
+
+  @override
+  List<Object?> get props => [
+        listallowance,
+      ];
+}
+
+class DeleteListAllowanceEvent extends AllowanceEvent {
+  final int index;
+  final String? id;
+  const DeleteListAllowanceEvent({
+    required this.index,
+    required this.id,
+  });
+
+  @override
+  List<Object?> get props => [index];
 }

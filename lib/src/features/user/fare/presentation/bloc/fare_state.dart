@@ -1,6 +1,6 @@
 part of 'fare_bloc.dart';
 
-enum FetchStatus { initial, loading, finish, failure }
+enum FetchStatus { initial, loading, finish, failure, updatesuccess, list }
 
 class FareState extends Equatable {
   final FetchStatus status;
@@ -8,6 +8,7 @@ class FareState extends Equatable {
   final List<EmployeesAllRolesEntity> empallrole;
   final ResponseFareEntity? responseaddfare;
   final ResponseEditDraftFareEntity? responseeditfare;
+  final ResponseDoDeleteFareEntity? responsdodeletefare;
   final GetFareByIdEntity? getfarebyid;
   final Failure? error;
   final bool? isdraft;
@@ -18,6 +19,7 @@ class FareState extends Equatable {
     this.empallrole = const [],
     this.responseaddfare,
     this.responseeditfare,
+    this.responsdodeletefare,
     this.getfarebyid,
     this.isdraft = false,
     this.deleteItem = const [],
@@ -30,6 +32,7 @@ class FareState extends Equatable {
     List<EmployeesAllRolesEntity>? empallrole,
     ResponseFareEntity? responseaddfare,
     ResponseEditDraftFareEntity? responseeditfare,
+    ResponseDoDeleteFareEntity? responsdodeletefare,
     GetFareByIdEntity? getfarebyid,
     List<int>? deleteItem,
     bool? isdraft,
@@ -41,6 +44,7 @@ class FareState extends Equatable {
       listlocationandfuel: listlocationandfuel ?? this.listlocationandfuel,
       responseaddfare: responseaddfare ?? this.responseaddfare,
       responseeditfare: responseeditfare ?? this.responseeditfare,
+      responsdodeletefare: responsdodeletefare ?? this.responsdodeletefare,
       getfarebyid: getfarebyid ?? this.getfarebyid,
       isdraft: isdraft ?? this.isdraft,
       deleteItem: deleteItem ?? this.deleteItem,
@@ -60,7 +64,6 @@ class FareState extends Equatable {
 }
 
 final class FareInitial extends FareState {
-  // const FareInitial() : super(listlocationandfuel: const []);
   @override
   List<Object?> get props => [];
 }

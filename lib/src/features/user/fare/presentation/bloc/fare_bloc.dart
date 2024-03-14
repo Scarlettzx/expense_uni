@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:uni_expense/src/features/user/fare/data/models/edit_draft_fare_model.dart';
-
 import '../../../../../core/error/failure.dart';
 import '../../data/models/add_fare_model.dart';
 import '../../data/models/addlist_location_fuel.dart';
+import '../../data/models/delete_fare_model.dart';
+import '../../data/models/edit_draft_fare_model.dart';
 import '../../domain/entities/entities.dart';
 import '../../domain/usecases/usecases.dart';
 
@@ -16,12 +16,14 @@ class FareBloc extends Bloc<FareEvent, FareState> {
   final AddFare addexepnsefaredata;
   final GetFareByid getfarebyiddata;
   final EditFare editfaredata;
+  final DeleteFare deletefaredata;
   List<EmployeesAllRolesEntity> empallrolesData = [];
   FareBloc({
     required this.getEmployeesAllrolesdata,
     required this.addexepnsefaredata,
     required this.editfaredata,
     required this.getfarebyiddata,
+    required this.deletefaredata,
   }) : super(FareInitial()) {
     on<FareEvent>((event, emit) {
       print(event.runtimeType);
@@ -32,7 +34,7 @@ class FareBloc extends Bloc<FareEvent, FareState> {
         ..add(event.listlocationandfuel);
       emit(
         state.copyWith(
-          status: FetchStatus.finish,
+          status: FetchStatus.list,
           listlocationandfuel: newListLocationandFuel,
         ),
       );
@@ -48,7 +50,7 @@ class FareBloc extends Bloc<FareEvent, FareState> {
       }).toList();
       emit(
         state.copyWith(
-          status: FetchStatus.finish,
+          status: FetchStatus.list,
           listlocationandfuel: newListLocationandFuel,
         ),
       );
@@ -56,7 +58,7 @@ class FareBloc extends Bloc<FareEvent, FareState> {
     //! Delete Todo Event Hanlder
     on<DeleteListLocationAndFuelEvent>((event, emit) {
       final indexToRemove = event.index;
-      print(state.isdraft);
+      // print(state.isdraft);
       final newListLocationandFuel = List.of(state.listlocationandfuel);
       if (indexToRemove >= 0 && indexToRemove < newListLocationandFuel.length) {
         if (state.isdraft == true && event.id != null) {
@@ -65,35 +67,17 @@ class FareBloc extends Bloc<FareEvent, FareState> {
           print(datadeleteItem);
           newListLocationandFuel.removeAt(indexToRemove);
           emit(state.copyWith(
+            status: FetchStatus.list,
             listlocationandfuel: newListLocationandFuel,
             deleteItem: datadeleteItem,
           ));
         } else {
           newListLocationandFuel.removeAt(indexToRemove);
-          emit(state.copyWith(listlocationandfuel: newListLocationandFuel));
+          emit(state.copyWith(
+              status: FetchStatus.list,
+              listlocationandfuel: newListLocationandFuel));
         }
       }
-
-      // final newListLocationandFuel = state.listlocationandfuel
-      //     .where((todo) => todo.id != event.id)
-      //     .toList();
-      // print(state.isdraft);
-      // final indexToRemove = List.of(state.listlocationandfuel)
-      //     .indexWhere((todo) => todo.id == event.id);
-      // print("dddd $indexToRemove");
-      // print("dddd $newListLocationandFuel");
-      // if (state.isdraft == true && event.id != null) {
-      //   final datadeleteItem = List.of(state.deleteItem!)
-      //     ..add(int.tryParse(event.id!)!);
-      //   print(datadeleteItem);
-      //   emit(state.copyWith(
-      //       listlocationandfuel: newListLocationandFuel,
-      //       deleteItem: datadeleteItem));
-      // } else {
-      //   emit(state.copyWith(
-      //     listlocationandfuel: newListLocationandFuel,
-      //   ));
-      // }
     });
     on<GetEmployeesAllRolesEvent>((event, emit) async {
       emit(state.copyWith(status: FetchStatus.loading));
@@ -142,8 +126,6 @@ class FareBloc extends Bloc<FareEvent, FareState> {
                 net: e.net!,
                 personal: e.personal!,
                 total: e.total!,
-                // กำหนดค่าต่าง ๆ ที่ต้องการสำหรับ ListLocationandFuel
-                // เช่น date, startLocation, stopLocation, startMile, stopMile, total, personal, net, etc.
               );
             }).toList(),
             getfarebyid: r,
@@ -162,15 +144,26 @@ class FareBloc extends Bloc<FareEvent, FareState> {
               )),
           (r) => emit(
                 state.copyWith(
-                  status: FetchStatus.finish,
+                  status: FetchStatus.updatesuccess,
                   responseeditfare: r,
                 ),
               ));
     });
 
-    //
-    // on<GetListLocationAndFuelEvent>((event, emit) {
-    //   emit(ListCompleted(listlocationandfueldata: state.listlocationandfuel!));
-    // });
+    on<DeleteExpenseFareEvent>((event, emit) async {
+      emit(state.copyWith(status: FetchStatus.loading));
+      var responsedeletefare =
+          await deletefaredata(event.idEmp, event.deletefaredata);
+      responsedeletefare.fold(
+          (l) => emit(state.copyWith(
+                status: FetchStatus.failure,
+              )),
+          (r) => emit(
+                state.copyWith(
+                  status: FetchStatus.finish,
+                  responsdodeletefare: r,
+                ),
+              ));
+    });
   }
 }

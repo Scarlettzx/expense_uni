@@ -23,11 +23,11 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
     required String? remark,
     required int? typeExpense,
     required String? typeExpenseName,
-    required DateTime? lastUpdateDate,
+    required String? lastUpdateDate,
     required int? status,
     required int? sumAllowance,
     required int? sumSurplus,
-    required int? sumDays,
+    required num? sumDays,
     required int? sumNet,
     required int? idEmpApprover,
     required String? ccEmail,
@@ -62,9 +62,7 @@ class AddExpenseAllowanceModel extends AddExpenseAllowanceEntity {
         remark: json["remark"],
         typeExpense: json["typeExpense"],
         typeExpenseName: json["typeExpenseName"],
-        lastUpdateDate: json["lastUpdateDate"] is String
-            ? DateTime.parse(json["lastUpdateDate"])
-            : null,
+        lastUpdateDate:json["lastUpdateDate"],
         status: json["status"],
         sumAllowance: json["sumAllowance"],
         sumSurplus: json["sumSurplus"],
@@ -121,8 +119,6 @@ class AddExpenseListExpenseModel extends ListExpenseEntity {
             : double.parse(json["countDays"]),
       );
     } catch (e) {
-      // ในกรณีที่ Format ไม่ถูกต้อง
-      // ทำการ handle ตามที่คุณต้องการ
       print("Invalid date format: ${json["startDate"]}");
       return AddExpenseListExpenseModel(
         startDate: null,

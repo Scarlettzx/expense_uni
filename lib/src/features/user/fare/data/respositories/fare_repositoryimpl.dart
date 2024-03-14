@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:uni_expense/src/features/user/fare/data/models/add_fare_model.dart';
+import 'package:uni_expense/src/features/user/fare/data/models/delete_fare_model.dart';
 import 'package:uni_expense/src/features/user/fare/data/models/edit_draft_fare_model.dart';
 import 'package:uni_expense/src/features/user/fare/domain/entities/getfarebyid.dart';
+import 'package:uni_expense/src/features/user/fare/domain/entities/response_deletedraft_fare.dart';
 import 'package:uni_expense/src/features/user/fare/domain/entities/response_editdraft_fare.dart';
 import 'package:uni_expense/src/features/user/fare/domain/entities/response_fare.dart';
 
@@ -51,6 +53,17 @@ class FareRepositoryImpl implements FareRepository {
       int idEmployees, EditDraftFareModel dataupdate) async {
     try {
       final data = await remoteDatasource.updateFare(idEmployees, dataupdate);
+      return Right(data);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDoDeleteFareEntity>> deleteDraftFare(
+      int idEmployees, DeleteDraftFareModel datadelete) async {
+    try {
+      final data = await remoteDatasource.deleteFare(idEmployees, datadelete);
       return Right(data);
     } on ServerException {
       return Left(ServerFailure());

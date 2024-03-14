@@ -88,6 +88,22 @@ class UpdateFareEvent extends FareEvent {
         editfaredata,
       ];
 }
+
+class DeleteExpenseFareEvent extends FareEvent {
+  final int idEmp;
+  final DeleteDraftFareModel deletefaredata;
+
+  const DeleteExpenseFareEvent({
+    required this.idEmp,
+    required this.deletefaredata,
+  });
+  @override
+  List<Object?> get props => [
+        idEmp,
+        deletefaredata,
+      ];
+}
+
 // class GetListLocationAndFuelEvent extends FareEvent {
 //   @override
 //   List<Object?> get props => [];
